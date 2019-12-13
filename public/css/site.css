@@ -1,0 +1,48 @@
+body {
+    background: #f4f4f4;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+header, h1 {
+    color: #153243;
+}
+
+#login-form {
+    color: #33658A;
+}
+
+footer {
+    color: #2A2B2A;
+    line-height: 10%;
+}
+
+#submit {
+    color: #33658A;
+    background-color: oldlace;
+}
+
+#submit:hover {
+    color: oldlace;
+    background-color: #33658A;
+}
+
+p {
+    font-size: 1rem;
+}
+
+.error {
+    padding: 1rem 0rem;
+    color: #FF3D00;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+button {
+    border-radius: 0.5rem;
+    padding: 0.2rem 0.5rem;
+    border: 2px solid #33658A;
+}
+
+a {
+    padding: 10% 0%;
+}

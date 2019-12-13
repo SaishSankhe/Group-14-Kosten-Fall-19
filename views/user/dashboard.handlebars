@@ -1,0 +1,27 @@
+<h2>{{userInfo.email}}</h2>
+<p>User ID: {{userInfo._id}}</p>
+<p>Firstname: {{userInfo.fName}}</p>
+<p>Lastname: {{userInfo.lName}}</p>
+<p>Balance: {{userInfo.currentAmount}}</p>
+<p>Income: {{userInfo.income}}</p>
+
+<a href="/transaction"> Add transaction </a>
+<br/>
+<a href="/send"> Send money </a>
+<br/>
+<a href="/request"> Request money </a>
+<br/>
+<a href="/statement"> Statement </a>
+<br/>
+<a href="dashboard/pending"> Pending requests </a>
+<br/>
+<a href="/budget"> Add budget </a>
+<br/>
+<a href="/budget/my-budget"> View budget </a>
+<br/>
+<a href="/logout"> Logout </a>
+<br/>
+<form action="/dashboard/{{userInfo._id}}?_method=DELETE" method="POST">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">Delete my account</button>
+</form>

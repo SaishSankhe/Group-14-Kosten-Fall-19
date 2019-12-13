@@ -1,0 +1,23 @@
+{{#if splitPending}}
+    {{#if error}}
+        <p class="{{class}}">{{error}}</p>
+    {{/if}}
+    <h2> Split Requests</h2>
+    <ol>
+        {{#each splitPending}}
+        <li>{{splitAmount}}</li>
+        {{/each}}
+    </ol>
+{{/if}}
+{{#if requestPending}}
+    {{#if error}}
+        <p class="{{class}}">{{error}}</p>
+    {{/if}}
+    <h2> Requested money </h2>
+    <ol>
+        {{#each requestPending}}
+        <li>{{amount}}</li>
+        {{/each}}
+    </ol>
+{{/if}}
+<a href="/"> Dashboard </a>

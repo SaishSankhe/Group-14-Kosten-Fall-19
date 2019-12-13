@@ -1,0 +1,32 @@
+<h2> Add Transaction </h2>
+{{#if error}}
+    <p class="{{class}}">{{error}}</p>
+{{/if}}
+<form action="/transaction" method="POST" id="add-transaction">
+    <label for="transactionName"> Transaction name </label>
+    <input type="text" name="transactionName" id="transactionName">
+    <br/>
+    <label for="amount"> Amount </label>
+    <input type="text" name="amount" id="amount">
+    <br/>
+    <label for="type"> Type </label>
+    <select id="type" name="type">
+        <option value="credit"> credit </option>
+        <option value="debit"> debit </option>
+    </select>
+    <br/>
+    <label for="category"> Category </label>
+    <select id="category" name="category">
+        <option value="grocery"> grocery </option>
+        <option value="entertainment"> entertainment </option>
+        <option value="eatingOut"> eating out </option>
+        <option value="bills"> bills </option>
+        <option value="savings"> savings </option>
+        <option value="misc"> misc </option>
+        <option value="transportation"> transportation </option>
+        <option value="departmentalStore"> departmental store </option>
+    </select>
+    <br/>
+    <button type="submit" id="submit"> Add </button>
+</form>
+<a href="user/dashboard"> Dashboard </a>
