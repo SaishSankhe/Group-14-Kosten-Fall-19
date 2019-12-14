@@ -32,9 +32,7 @@ router.post('/', async (req, res) => {
   if (checkPassword.compare === true) {
     req.session.name = 'AuthCookie';
     req.session.userId = checkPassword.userId;
-    let splitPending = await requireSplit.checkSplitPending(userInfo._id);
-    let requestPending = await requireRequest.checkPending(userInfo._id)
-    res.render("user/dashboard", {userInfo: userInfo, splitPending: splitPending, requestPending: requestPending});
+    res.redirect("/dashboard");
   }
   else {
     res.status(401).render("user/login-form", {errorMessage: "Credentials incorrect!", title: "Incorrect Credentials", class: "error"});

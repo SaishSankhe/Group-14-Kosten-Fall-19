@@ -2,10 +2,14 @@
     {{#if error}}
         <p class="{{class}}">{{error}}</p>
     {{/if}}
-    <h2> Split Requests</h2>
+    <h2>Split Requests</h2>
     <ol>
         {{#each splitPending}}
-        <li>{{splitAmount}}</li>
+        <li>
+            Amount: {{splitAmount}}
+            <a href="/transaction/splitAccept/{{_id}}">Pay</a>
+            <a href="/transaction/splitDecline/{{_id}}">Cancel</a>
+        </li>
         {{/each}}
     </ol>
 {{/if}}
@@ -13,11 +17,15 @@
     {{#if error}}
         <p class="{{class}}">{{error}}</p>
     {{/if}}
-    <h2> Requested money </h2>
+    <h2>Requested Money</h2>
     <ol>
         {{#each requestPending}}
-        <li>{{amount}}</li>
+        <li>
+            Amount: {{amount}}
+            <a href="/request/accept/{{_id}}">Pay</a>
+            <a href="/request/decline/{{_id}}">Cancel</a>    
+        </li>
         {{/each}}
     </ol>
 {{/if}}
-<a href="/"> Dashboard </a>
+<a href="/dashboard">Dashboard</a>

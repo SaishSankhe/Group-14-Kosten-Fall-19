@@ -1,7 +1,8 @@
 const mongoCollections = require("../config/mongoCollections");
 const transaction = mongoCollections.transactions;
-const sent = mongoCollections.sent;
-const requested = mongoCollections.requested;
+const sent = mongoCollections.send;
+const requested = mongoCollections.request;
+const split = mongoCollections.split;
 const ObjectId = require('mongodb').ObjectID;
 
 async function checkSentSender (senderId, gte) {
@@ -9,7 +10,6 @@ async function checkSentSender (senderId, gte) {
 
     let getSentDetails = await sentCollection.find( { $and: [ { senderId: ObjectId(senderId) }, { date_time: { $gte: new Date(gte)} } ] } ).toArray();
     
-    console.log(getSentDetails);
     return getSentDetails;
 }
 
@@ -18,49 +18,57 @@ async function checkSentReceiver (receiverId, gte) {
 
     let getReceivedDetails = await sentCollection.find( { $and: [ { receiverId: ObjectId(receiverId) }, { date_time: { $gte: new Date(gte)} } ] } ).toArray();
     
-    console.log(getReceivedDetails);
     return getReceivedDetails;
 }
 
 async function checkRequestRequester (requesterId, gte) {
     let requestedCollection = await requested();
 
-    let getRequestedDetails = await requestedCollection.find( { $and: [ { requesterId: ObjectId(requesterId) }, { date_time: { $gte: new Date(gte)} } ] } ).toArray();
+    let getRequestedDetails = await requestedCollection.find( { $and: [ { requesterId: ObjectId(requesterId) }, { date_time: { $gte: new Date(gte)} }, { requestFlag: true } ] } ).toArray();
     
-    console.log(getRequestedDetails);
     return getRequestedDetails;
 }
 
 async function checkRequestGranter (granterId, gte) {
     let requestedCollection = await requested();
 
-    let getGrantedDetails = await requestedCollection.find( { $and: [ { granterId: ObjectId(granterId) }, { date_time: { $gte: new Date(gte)} } ] } ).toArray();
+    let getGrantedDetails = await requestedCollection.find( { $and: [ { granterId: ObjectId(granterId) }, { date_time: { $gte: new Date(gte)} }, { requestFlag: true } ] } ).toArray();
     
-    console.log(getGrantedDetails);
     return getGrantedDetails;
 }
 
-// async function checkCreditDebits (userId, gte) {
-//     let transactionCollections = await transaction();
+async function checkCreditDebit (userId, gte) {
+    let transactionCollections = await transaction();
 
-//     let getCreditDebitDetails = await transactionCollections.find( { $and: [ { userId: ObjectId(userId) }, { date_time: { $gte: new Date(gte)} } ] } ).toArray();
+    let getCreditDebitDetails = await transactionCollections.find( { $and: [ { userId: ObjectId(userId) }, { date_time: { $gte: new Date(gte)} } ] } ).toArray();
     
-//     console.log(getCreditDebitDetails);
-//     return getCreditDebitDetails;
-// }
+    return getCreditDebitDetails;
+}
 
-// async function checkSplitDebit (granterId, gte) {
-//     let requestedCollection = await requested();
+async function checkSplitDebit (userId, gte) {
+    let splitCollection = await split();
 
-//     let getGrantedDetails = await requestedCollection.find( { $and: [ { granterId: ObjectId(granterId) }, { date_time: { $gte: new Date(gte)} } ] } ).toArray();
+    let getSplitDebit = await splitCollection.find( { $and: [ { "requestFlag.userId": ObjectId(userId) }, { date_time: { $gte: new Date(gte)} }, { "requestFlag.flag": true } ] } ).toArray();
     
-//     console.log(getGrantedDetails);
-//     return getGrantedDetails;
-// }
+    return getSplitDebit;
+}
+
+async function checkSplitCredit (userId, gte) {
+    let splitCollection = await split();
+
+    let getSplitCredit = await splitCollection.find( { $and: [ { superUserId: ObjectId(userId) }, { date_time: { $gte: new Date(gte)} } ] } ).toArray();
+    
+    return getSplitCredit;
+}
+
+//checkSplitDebit("5df42ea6ed991316cee2f2b6", "2019-12-14T01:30:42.634+00:00");
 
 module.exports = {
     checkSentSender,
     checkSentReceiver,
     checkRequestRequester,
-    checkRequestGranter
+    checkRequestGranter,
+    checkCreditDebit,
+    checkSplitDebit,
+    checkSplitCredit
 }

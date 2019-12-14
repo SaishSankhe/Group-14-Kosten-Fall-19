@@ -6,7 +6,7 @@ const requireSend = data.send;
 
 router.get('/', async (req, res) => {
     res.render("user/send", {title: "Send"});
-  });
+});
 
 router.post('/', async (req, res) => {
   let details = req.body;
@@ -29,4 +29,4 @@ router.post('/', async (req, res) => {
   res.render("user/success", {message: "Money sent!"})
 });
   
-  module.exports = router;
+module.exports = router;

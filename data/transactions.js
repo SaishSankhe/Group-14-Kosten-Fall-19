@@ -44,9 +44,10 @@ async function addTransaction (userId, transactionDet) {
                 let splitAmount = parseFloat(amount)/noOfUsers;
                 let splitDetailsObj = {
                     transactionId: newTransactionId,
-                    superUserId: userId,
-                    bool: true,
+                    superUserId: ObjectId(userId),
                     splitAmount: splitAmount,
+                    date_time: date_time,
+                    bool: true,
                     requestFlag:[]
                 }
 
@@ -238,6 +239,14 @@ function checkDateCurrentBudget (toBeCompared, user) {
        return false;
 }
 
+async function recentTransactions (userId) {
+    const transactionCollection = await transaction();
+
+    let getTransactions = await transactionCollection.find({ userId: ObjectId(userId) }).toArray();
+
+    return getTransactions;
+}
+
 async function deleteTransaction (transactionId) {
     const transactionCollection = await transaction();
 
@@ -283,7 +292,15 @@ async function deleteTransaction (transactionId) {
                 }
             }
         }
-        await transactionCollection.removeOne({_id: ObjectId(transactionId)});
+
+        let deleteInfo = await transactionCollection.removeOne({_id: ObjectId(transactionId)});
+
+        if (deleteInfo.deletedCount === 0) {
+            return false;
+        }
+        if (deleteInfo.deletedCount === 1) {
+            return true;
+        }
     }
     if (typeOfTransaction === "credit") {
         
@@ -315,7 +332,14 @@ async function deleteTransaction (transactionId) {
                 }
             }
         }
-        await transactionCollection.removeOne({_id: ObjectId(transactionId)});
+        let deleteInfo = await transactionCollection.removeOne({_id: ObjectId(transactionId)});
+        
+        if (deleteInfo.deletedCount === 0) {
+            return false;
+        }
+        if (deleteInfo.deletedCount === 1) {
+            return true;
+        }
     }
 }
 
@@ -360,7 +384,6 @@ async function updateTransaction (transactionId, newTransactionDet) {
     }
 
     if (typeOfTransaction === "credit") {
-        
         let newCurrentAmount = parseFloat(currentAmount) - parseFloat(amount);
         userInfo.currentAmount = newCurrentAmount.toString();
         await requireUsers.updateAmount(userInfo);
@@ -400,11 +423,7 @@ async function updateTransaction (transactionId, newTransactionDet) {
             type: type,
             date_time: updatedDateTime,
             category: updatedCategory,
-            transactionName: newTransactionDet.transactionName,
-            split: {
-                splitId: undefined,
-                bool: newTransactionDet.split.bool
-            }
+            transactionName: newTransactionDet.transactionName
         };
     
         let updateTransactionInfo = await transactionCollection.updateOne({_id: ObjectId(transactionId)}, {$set: updatedtransactionDetailsObj});
@@ -412,51 +431,51 @@ async function updateTransaction (transactionId, newTransactionDet) {
             return false;
 
         if(type === "debit") {
-            if (newTransactionDet.split.bool === true) {
-                const splitCollection = await split();
-                let noOfUsers = newTransactionDet.requestFlag.length + 1;
-                let splitAmount = parseFloat(newAmount)/noOfUsers;
-                let splitDetailsObj = {
-                    transactionId: transactionId,
-                    superUserId: userInfo._id,
-                    bool: true,
-                    splitAmount: splitAmount,
-                    requestFlag:[]
-                }
+            // if (newTransactionDet.split.bool === true) {
+            //     const splitCollection = await split();
+            //     let noOfUsers = newTransactionDet.requestFlag.length + 1;
+            //     let splitAmount = parseFloat(newAmount)/noOfUsers;
+            //     let splitDetailsObj = {
+            //         transactionId: transactionId,
+            //         superUserId: userInfo._id,
+            //         bool: true,
+            //         splitAmount: splitAmount,
+            //         requestFlag:[]
+            //     }
 
-                let findUserIdArr = [];
+            //     let findUserIdArr = [];
 
-                for (let i in newTransactionDet.requestFlag) {
-                    let userEmailId = newTransactionDet.requestFlag[i]
-                    let findUser = await requireUsers.getUserByEmail(userEmailId);
-                    let findUserId = findUser._id;
-                    findUserIdArr.push(findUserId);
-                }
+            //     for (let i in newTransactionDet.requestFlag) {
+            //         let userEmailId = newTransactionDet.requestFlag[i]
+            //         let findUser = await requireUsers.getUserByEmail(userEmailId);
+            //         let findUserId = findUser._id;
+            //         findUserIdArr.push(findUserId);
+            //     }
 
-                for (let i in findUserIdArr) {
-                    let userObj = {
-                        userId: findUserIdArr[i], 
-                        flag: false
-                    }
-                    splitDetailsObj.requestFlag.push(userObj);
-                }
+            //     for (let i in findUserIdArr) {
+            //         let userObj = {
+            //             userId: findUserIdArr[i], 
+            //             flag: false
+            //         }
+            //         splitDetailsObj.requestFlag.push(userObj);
+            //     }
 
-                let insertSplitInfo = await splitCollection.insertOne(splitDetailsObj);
-                if (insertSplitInfo.insertedCount === 0) 
-                    return false;
+            //     let insertSplitInfo = await splitCollection.insertOne(splitDetailsObj);
+            //     if (insertSplitInfo.insertedCount === 0) 
+            //         return false;
 
-                let newSplitId = insertSplitInfo.insertedId;
-                getTransactionDetails.split.splitId = newSplitId;
-                let updateSplitIdInfo = await transactionCollection.updateOne({_id: ObjectId(transactionId)}, {$set: getTransactionDetails});
-                if (updateSplitIdInfo.modifiedCount === 0)
-                    return false;
+            //     let newSplitId = insertSplitInfo.insertedId;
+            //     getTransactionDetails.split.splitId = newSplitId;
+            //     let updateSplitIdInfo = await transactionCollection.updateOne({_id: ObjectId(transactionId)}, {$set: getTransactionDetails});
+            //     if (updateSplitIdInfo.modifiedCount === 0)
+            //         return false;
 
-                await requireUsers.updateUserSplitCreditInfo(userInfo, newSplitId);
+            //     await requireUsers.updateUserSplitCreditInfo(userInfo, newSplitId);
                 
-                for (let i in findUserIdArr) {
-                    await requireUsers.updateUserSplitDebitInfo(findUserIdArr[i], newSplitId);
-                }
-            }
+            //     for (let i in findUserIdArr) {
+            //         await requireUsers.updateUserSplitDebitInfo(findUserIdArr[i], newSplitId);
+            //     }
+            // }
 
             let intUpdatedAmount = parseFloat(userInfo.currentAmount) - parseFloat(newAmount);
             let updatedAmount = intUpdatedAmount.toString();
@@ -473,7 +492,6 @@ async function updateTransaction (transactionId, newTransactionDet) {
     // }
 
     if(type === "credit") {
-        
         let intUpdatedAmount = parseFloat(userInfo.currentAmount) + parseFloat(newAmount);
         let updatedAmount = intUpdatedAmount.toString();
         userInfo.currentAmount = updatedAmount;
@@ -515,5 +533,7 @@ module.exports = {
     checkDateCurrentBudget,
     deleteTransaction,
     updateTransaction,
-    updateBudgetCategories
+    updateBudgetCategories,
+    recentTransactions
 }
+

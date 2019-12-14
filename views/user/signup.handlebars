@@ -3,18 +3,18 @@
     <p class="{{class}}">{{error}}</p>
 {{/if}}
 <form action="/signup" method="POST" id="login-form">
-    <label for="fName"> First Name </label>
-    <input type="text" name="fName" id="fName">
+    <label for="fName">First Name:</label>
+    <input type="text" name="fName" id="fName" required>
     <br/>
-    <label for="lName"> Last Name </label>
-    <input type="text" name="lName" id="lName">
+    <label for="lName">Last Name:</label>
+    <input type="text" name="lName" id="lName" required>
     <br/>
-    <label for="email"> Email </label>
-    <input type="text" name="email" id="email">
+    <label for="email">Email:</label>
+    <input type="text" name="email" id="email" required>
     <br/>
-    <label for="password"> Password </label>
-    <input type="password" name="password" id="password">
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" required>
     <br/>
-    <button type="submit" id="submit"> Sign Up </button>
+    <button type="submit" id="submit">Sign Up</button>
 </form>
-<a href="/login"> Login </a>
+<a href="/login">Login</a>

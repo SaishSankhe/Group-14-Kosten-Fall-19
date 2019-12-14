@@ -3,6 +3,10 @@ const router = express.Router();
 const requireUsers =  require("../data/users")
 const session = require('express-session');
 
+router.get('/', async (req, res) => {
+  res.render("user/signup", {title: "Sign Up"});
+});
+
 router.post("/", async (req, res) => {
     let formData = req.body;
     let userEmail = formData.email;

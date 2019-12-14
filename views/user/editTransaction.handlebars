@@ -1,0 +1,31 @@
+<h2> Edit Transaction </h2>
+{{#if error}}
+    <p class="{{class}}">{{error}}</p>
+{{/if}}
+<form action="/transaction/{{transaction._id}}?_method=PUT" method="POST" id="edit-transaction">
+    <label for="transactionName">Transaction name:</label>
+    <input type="text" name="transactionName" id="transactionName" value="{{transaction.transactionName}}" required>
+    <br/>
+    <label for="amount">Amount:</label>
+    <input type="text" name="amount" id="amount" value="{{transaction.amount}}" required>
+    <br/>
+    <label for="category">Category:</label>
+    <select id="category" name="category">
+        <option value="{{transaction.category}}" selected>Last selected: {{transaction.category}}</option>
+        <option value="grocery">Grocery</option>
+        <option value="entertainment">Entertainment</option>
+        <option value="eatingOut">Eating out</option>
+        <option value="bills">Bills</option>
+        <option value="savings">Savings</option>
+        <option value="misc">Miscellaneous</option>
+        <option value="transportation">Transportation</option>
+        <option value="departmentalStore">Departmental store</option>
+    </select>
+    <br/>
+    <input type="hidden" name="transactionId" value="{{transaction._id}}">
+    <input type="hidden" name="type" value="{{transaction.type}}">
+    <input type="hidden" name="_method" value="PUT">
+    <button type="submit" id="submit">Update</button>
+</form>
+<br/>
+<a href="/dashboard">Dashboard</a>

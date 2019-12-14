@@ -1,27 +1,171 @@
-<h2>{{userInfo.email}}</h2>
-<p>User ID: {{userInfo._id}}</p>
-<p>Firstname: {{userInfo.fName}}</p>
-<p>Lastname: {{userInfo.lName}}</p>
-<p>Balance: {{userInfo.currentAmount}}</p>
-<p>Income: {{userInfo.income}}</p>
+<!-- Card stats -->
+<div class="row">
+<div class="col-xl-4 col-lg-8">
+    <div class="card card-stats mb-4 mb-xl-0">
+    <div class="card-body">
+        <div class="row">
+        <div class="col">
+            <h5 class="card-title text-uppercase text-muted mb-0">Balance</h5>
+            <span class="display-4 font-weight-bold mb-0">$ {{userInfo.currentAmount}}</span>
+        </div>
+        <div class="col-auto">
+            <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+            <i class="fas fa-chart-bar"></i>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+</div>
 
-<a href="/transaction"> Add transaction </a>
-<br/>
-<a href="/send"> Send money </a>
-<br/>
-<a href="/request"> Request money </a>
-<br/>
-<a href="/statement"> Statement </a>
-<br/>
-<a href="dashboard/pending"> Pending requests </a>
-<br/>
-<a href="/budget"> Add budget </a>
-<br/>
-<a href="/budget/my-budget"> View budget </a>
-<br/>
-<a href="/logout"> Logout </a>
-<br/>
-<form action="/dashboard/{{userInfo._id}}?_method=DELETE" method="POST">
-    <input type="hidden" name="_method" value="DELETE">
-    <button type="submit">Delete my account</button>
-</form>
+{{#if requestPending}}
+<div class="row mt-5">
+    <div class="col-xl-6 mb-5 mb-xl-0">
+        <div class="card shadow">
+        <div class="card-header border-0">
+            <div class="row align-items-center">
+            <div class="col">
+                <h3 class="mb-0">Pending Requests</h3>
+            </div>
+            <div class="col text-right">
+                <a href="/dashboard/pending" class="btn btn-sm btn-primary">See all</a>
+            </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <!-- Projects table -->
+            <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+                <tr>
+                <th scope="col">Request Amount</th>
+                <th scope="col">Remark</th>
+                <th scope="col">Action</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                {{#each requestPending}}
+                <tr>
+                <th scope="row">
+                    {{amount}}
+                </th>
+                <td>
+                    {{remark}}
+                </td>
+                <td>
+                    <div class="col text-right">
+                        <a href="/request/accept/{{_id}}" class="btn btn-sm btn-primary">Pay</a>
+                        <a href="/request/decline/{{_id}}" class="btn btn-sm btn-primary">Cancel</a>
+                    </div>
+                </td>
+                </tr>
+                {{/each}}
+            </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+
+{{#if splitPending}}
+<div class="row mt-5">
+    <div class="col-xl-6 mb-5 mb-xl-0">
+        <div class="card shadow">
+        <div class="card-header border-0">
+            <div class="row align-items-center">
+            <div class="col">
+                <h3 class="mb-0">Split Pending Requests</h3>
+            </div>
+            <div class="col text-right">
+                <a href="/dashboard/pending" class="btn btn-sm btn-primary">See all</a>
+            </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <!-- Projects table -->
+            <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+                <tr>
+                <th scope="col">Split Amount</th>
+                <th scope="col">Action</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                {{#each requestPending}}
+                <tr>
+                <th scope="row">
+                    {{splitAmount}}
+                </th>
+                <td>
+                    <div class="col text-right">
+                        <a href="/request/accept/{{_id}}" class="btn btn-sm btn-primary">Pay</a>
+                        <a href="/request/decline/{{_id}}" class="btn btn-sm btn-primary">Cancel</a>
+                    </div>
+                </td>
+                </tr>
+                {{/each}}
+            </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+
+{{#if recentTransactions}}
+<div class="row mt-5">
+    <div class="col-xl-12 mb-5 mb-xl-0">
+        <div class="card shadow">
+        <div class="card-header border-0">
+            <div class="row align-items-center">
+            <div class="col">
+                <h3 class="mb-0">Recent Transaction</h3>
+            </div>
+            <div class="col text-right">
+                <a href="/recentTransactions" class="btn btn-sm btn-primary">See all</a>
+            </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <!-- Projects table -->
+            <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+                <tr>
+                <th scope="col">Transaction name</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Date</th>
+                <th scope="col">Type</th>
+                <th scope="col">Category</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                {{#each recentTransactions}}
+                <tr>
+                <th scope="row">
+                    {{transactionName}}
+                </th>
+                <td>
+                    {{amount}}
+                </td>
+                <td>
+                    {{date_time}}
+                </td>
+                <td>
+                    {{type}}
+                </td>
+                <td>
+                    {{category}}
+                </td>
+                </tr>
+                {{/each}}
+            </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+</div>
+{{/if}}

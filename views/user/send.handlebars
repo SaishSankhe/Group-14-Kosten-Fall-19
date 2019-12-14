@@ -1,17 +1,17 @@
-<h2> Send Money </h2>
+<h2>Send Money</h2>
 {{#if error}}
     <p class="{{class}}">{{error}}</p>
 {{/if}}
 <form action="/send" method="POST" id="send-money">
-    <label for="receiverEmail"> Send to </label>
-    <input type="email" name="receiverEmail" id="receiverEmail">
+    <label for="receiverEmail">Send to:</label>
+    <input type="email" name="receiverEmail" id="receiverEmail" required>
     <br/>
-    <label for="amount"> Amount </label>
-    <input type="number" name="amount" id="amount">
+    <label for="amount">Amount:</label>
+    <input type="number" name="amount" id="amount" required>
     <br/>
-    <label for="remark"> Remark </label>
-    <input type="text" name="remark" id="remark">
+    <label for="remark">Remark:</label>
+    <input type="text" name="remark" id="remark" required>
     <br/>
-    <button type="submit" id="submit"> Send </button>
+    <button type="submit" id="submit">Send</button>
 </form>
-<a href="/dashboard"> Dashboard </a>
+<a href="/dashboard">Dashboard</a>

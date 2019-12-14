@@ -3,34 +3,34 @@
     <p class="{{class}}">{{error}}</p>
 {{/if}}
 <form action="/budget" method="POST" id="budget-form">
-    <label for="income"> Income </label>
-    <input type="text" name="income" id="income" placeholder="1000">
+    <label for="income">Income:</label>
+    <input type="text" name="income" id="income" placeholder="1000" required>
     <br/>
-    <label for="grocery"> grocery </label>
-    <input type="text" name="grocery" id="grocery" placeholder="0.25" value="0.15">
+    <label for="grocery">Grocery:</label>
+    <input type="text" name="grocery" id="grocery" placeholder="0.25" value="0.15" required>
     <br/>
-    <label for="entertainment"> entertainment </label>
-    <input type="text" name="entertainment" id="entertainment" placeholder="0.05" value="0.05">
+    <label for="entertainment">Entertainment:</label>
+    <input type="text" name="entertainment" id="entertainment" placeholder="0.05" value="0.05" required>
     <br/>
-    <label for="eatingOut"> eatingOut </label>
-    <input type="text" name="eatingOut" id="eatingOut" placeholder="0.05" value="0.05">
+    <label for="eatingOut">Eating Out:</label>
+    <input type="text" name="eatingOut" id="eatingOut" placeholder="0.05" value="0.05" required>
     <br/>
-    <label for="bills"> bills </label>
-    <input type="text" name="bills" id="bills" placeholder="0.30" value="0.30">
+    <label for="bills">BillS:</label>
+    <input type="text" name="bills" id="bills" placeholder="0.30" value="0.30" required>
     <br/>
-    <label for="savings"> savings </label>
-    <input type="text" name="savings" id="savings" placeholder="0.20" value="0.120">
+    <label for="savings">Savings:</label>
+    <input type="text" name="savings" id="savings" placeholder="0.20" value="0.120" required>
     <br/>
-    <label for="misc"> misc </label>
-    <input type="text" name="misc" id="misc" placeholder="0.05" value="0.05">
+    <label for="misc">Miscellaneous: </label>
+    <input type="text" name="misc" id="misc" placeholder="0.05" value="0.05" required>
     <br/>
-    <label for="transportation"> transportation </label>
-    <input type="text" name="transportation" id="transportation" placeholder="0.10" value="0.10">
+    <label for="transportation">Transportation:</label>
+    <input type="text" name="transportation" id="transportation" placeholder="0.10" value="0.10" required>
     <br/>
-    <label for="departmentalStore"> departmentalStore </label>
-    <input type="text" name="departmentalStore" id="departmentalStore" placeholder="0.10" value="0.10">
+    <label for="departmentalStore">Departmental store:</label>
+    <input type="text" name="departmentalStore" id="departmentalStore" placeholder="0.10" value="0.10" required>
     <br/>
-    <button type="submit" id="submit"> Add Budget </button>
+    <button type="submit" id="submit">Add Budget</button>
 </form>
 
-<a href="/dashboard"> Dashboard </a>
+<a href="/dashboard">Dashboard</a>

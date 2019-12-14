@@ -59,7 +59,7 @@ app.use("/signup", signupRouter);
 app.use("/transaction", transactionRouter);
 // app.use("/resetpass", resetpassRouter);
 // app.use("/profile", profileRouter);
-// app.use("/recentTransactions", recentTransactionsRouter);
+app.use("/recentTransactions", recentTransactionsRouter);
 app.use("/send", sendRouter);
 app.use("/request", requestRouter);
 // app.use("/statement", statementRouter);

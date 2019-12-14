@@ -48,7 +48,7 @@ async function acceptRequest (requestId) {
         let granterCurrentAmount = parseFloat(granterInfo.currentAmount) - parseFloat(requestAmount);
         granterInfo.currentAmount = granterCurrentAmount.toString()
         await requireUsers.updateAmount(granterInfo);
-        granterInfo.transactionIds.requestGranted.push(requestId);
+        granterInfo.transactionIds.requestGranted.push(ObjectId(requestId));
         await requireUsers.updateTransactionIds(granterInfo);
 
         let requesterCurrentAmount = parseFloat(requesterInfo.currentAmount) + parseFloat(requestAmount);
@@ -67,12 +67,34 @@ async function acceptRequest (requestId) {
     return false;
 }
 
+async function declineRequest (requestId) {
+    const requestCollection = await requested();
+
+    let requestInfo = await getRequestInfo(requestId);
+    let requesterInfo = await requireUsers.getUser(requestInfo.requesterId);
+
+    for (let i in requesterInfo.transactionIds.requested) {
+        if (requesterInfo.transactionIds.requested[i].toString() === requestId.toString()) {
+            requesterInfo.transactionIds.requested.splice(requesterInfo.transactionIds.requested[i], 1);
+            await requireUsers.updateAmount(requesterInfo);
+        }
+    }
+
+    let deleteInfo = await requestCollection.removeOne({_id: ObjectId(requestId)});
+    
+    if (deleteInfo.deletedCount === 0) {
+        return false;
+    }
+    if (deleteInfo.deletedCount === 1) {
+        return true;
+    }
+}
+
 async function checkPending (granterId) {
     const requestCollection = await requested();
 
     let getPending = await requestCollection.find( { $and: [ { granterId: ObjectId(granterId) }, { requestFlag: false } ] } ).toArray();
 
-    console.log(getPending);
     return getPending;
 }
 
@@ -97,5 +119,6 @@ module.exports = {
     acceptRequest,
     checkPending,
     checkGranterBalance,
-    getRequestInfo
+    getRequestInfo,
+    declineRequest
 }

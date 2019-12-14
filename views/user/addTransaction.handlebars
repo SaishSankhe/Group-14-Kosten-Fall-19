@@ -3,30 +3,37 @@
     <p class="{{class}}">{{error}}</p>
 {{/if}}
 <form action="/transaction" method="POST" id="add-transaction">
-    <label for="transactionName"> Transaction name </label>
-    <input type="text" name="transactionName" id="transactionName">
+    <label for="transactionName">Transaction name:</label>
+    <input type="text" name="transactionName" id="transactionName" required>
     <br/>
-    <label for="amount"> Amount </label>
-    <input type="text" name="amount" id="amount">
+    <label for="amount">Amount:</label>
+    <input type="text" name="amount" id="amount" required>
     <br/>
-    <label for="type"> Type </label>
-    <select id="type" name="type">
-        <option value="credit"> credit </option>
-        <option value="debit"> debit </option>
+    <label for="type">Type:</label>
+    <select id="type" name="type" onchange="splitList()">
+        <option value="credit">Credit</option>
+        <option value="debit">Debit</option>
     </select>
     <br/>
-    <label for="category"> Category </label>
+    <div id="add-here">
+        <div id="container"> </div>
+    </div>
+    <br/>
+    <label for="category">Category:</label>
     <select id="category" name="category">
-        <option value="grocery"> grocery </option>
-        <option value="entertainment"> entertainment </option>
-        <option value="eatingOut"> eating out </option>
-        <option value="bills"> bills </option>
-        <option value="savings"> savings </option>
-        <option value="misc"> misc </option>
-        <option value="transportation"> transportation </option>
-        <option value="departmentalStore"> departmental store </option>
+        <option value="grocery">Grocery</option>
+        <option value="entertainment">Entertainment</option>
+        <option value="eatingOut">Eating out</option>
+        <option value="bills">Bills</option>
+        <option value="savings">Savings</option>
+        <option value="misc">Miscellaneous</option>
+        <option value="transportation">Transportation</option>
+        <option value="departmentalStore">Departmental store</option>
     </select>
     <br/>
-    <button type="submit" id="submit"> Add </button>
+    <button type="submit" id="submit">Add Transaction</button>
 </form>
-<a href="user/dashboard"> Dashboard </a>
+<br/>
+<a href="/dashboard">Dashboard</a>
+<script src="/public/js/addTransaction.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

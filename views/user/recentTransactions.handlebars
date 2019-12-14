@@ -1,0 +1,29 @@
+{{#if recentTransactions}}
+    {{#if error}}
+        <p class="{{class}}">{{error}}</p>
+    {{/if}}
+    <h2>recentTransactions</h2>
+    <ol>
+        {{#each recentTransactions}}
+        <li>
+            Transaction Name: {{transactionName}} <br/>
+            Amount: {{amount}} <br/>
+            Type: {{type}} <br/>
+            Category: {{category}} <br/>
+            {{#if split.bool}}
+                Split: Yes <br/>
+            {{/if}}
+            {{!-- <form action="/transaction/{{_id}}?_method=PUT" method="POST">
+                <input type="hidden" name="_method" value="PUT">
+                <button type="submit">Edit Transaction</button>
+            </form> --}}
+            <a href="/transaction/{{_id}}">Edit Transaction</a>
+            <form action="/transaction/{{_id}}?_method=DELETE" method="POST">
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="hidden" name="transactionId" value="{{_id}}">
+                <button type="submit">Delete Transaction</button>
+            </form>
+        </li>
+        {{/each}}
+    </ol>
+{{/if}}
