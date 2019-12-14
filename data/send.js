@@ -8,13 +8,24 @@ async function sendMoney (sendDetails) {
     const sentCollection = await sent();
 
     let senderId = sendDetails.senderId;
-    let receiverEmail = sendDetails.receiverEmail;
-    let amount = sendDetails.amount;
+    let receiverEmail = sendDetails.receiverEmail.toLowerCase().trim();
+    let amount = sendDetails.amount.trim();
 
     let senderInfo = await requireUsers.getUser(senderId);
+    // check if sender is found
+    if (!senderInfo) {
+        throw "Sender not found!"
+    }
+
     let receiverInfo = await requireUsers.getUserByEmail(receiverEmail);
+
+    // check if receiver is registered user
+    if (!receiverInfo) {
+        throw "Money cannot be sent to an unregistered user!"
+    }
+
     let receiverId = receiverInfo._id;
-    let senderCurrentAmount = senderInfo.currentAmount;
+    let senderCurrentAmount = senderInfo.currentAmount.trim();
 
     let isEnoughBalance = checkUserBalance(senderCurrentAmount, amount);
 
@@ -22,8 +33,8 @@ async function sendMoney (sendDetails) {
         let sendDetailsObj = {
             senderId: ObjectId(sendDetails.senderId),
             receiverId: ObjectId(receiverId),
-            amount: sendDetails.amount,
-            remark: sendDetails.remark,
+            amount: sendDetails.amount.trim(),
+            remark: sendDetails.remark.trim(),
             date_time: sendDetails.date_time
         }
 
@@ -48,9 +59,8 @@ async function sendMoney (sendDetails) {
 
         return true;
     }
-
     else
-        return false;
+        throw "You do not have enough balance to send money!";
 }
 
 function checkUserBalance (currentAmount, amount) {

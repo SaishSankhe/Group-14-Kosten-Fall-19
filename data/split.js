@@ -8,20 +8,38 @@ async function updateSplitCalculation (splitId, userId) {
     const splitCollection = await split();
 
     let splitInfo = await getSplitTransaction(splitId);
+    // check if split info found
+    if (!splitInfo) {
+        throw "Split info not found!"
+    }
+
     const transactionId = splitInfo.transactionId;
     let transaction = await requireTransactions.getTransaction(transactionId);
+    // check if transaction found
+    if (!transaction) {
+        throw "Transaction not found!"
+    }
 
     const transactionTime = transaction.date_time.toString();
 
-    const transactionCategory = transaction.category;
+    const transactionCategory = transaction.category.trim();
     const splitAmount = splitInfo.splitAmount;
     const superUserId = splitInfo.superUserId;
 
     let superUserInfo = await requireUsers.getUser(superUserId);
+    // check if superuser found
+    if (!superUserInfo) {
+        throw "Super user not found!"
+    }
+
     let userInfo = await requireUsers.getUser(userId);
+    // check if split user found
+    if (!userInfo) {
+        throw "Other users not found!"
+    }
     
-    let superUserCurrentAmount = superUserInfo.currentAmount;
-    let userCurrentAmount = userInfo.currentAmount;
+    let superUserCurrentAmount = superUserInfo.currentAmount.trim();
+    let userCurrentAmount = userInfo.currentAmount.trim();
     
     let ifEnoughBalance = checkUserBalance (userCurrentAmount, splitAmount);
 
@@ -45,12 +63,11 @@ async function updateSplitCalculation (splitId, userId) {
         let updateSplitIdInfo = await splitCollection.updateOne({_id: ObjectId(splitId)}, {$set: splitInfo});
         
         if (updateSplitIdInfo.modifiedCount === 0)
-            return "Cannot update at the moment!";
+            throw "Updating split id failed!";
 
         await requireTransactions.resetAndSetCategories(transactionTime, userInfo, splitAmount, "debit", transactionCategory);
 
         await requireTransactions.resetAndSetCategories(transactionTime, superUserInfo, splitAmount, "credit", transactionCategory);
-        return "Updated successfully!";
     }
     else
         throw "Not enough balance!";
@@ -59,25 +76,17 @@ async function updateSplitCalculation (splitId, userId) {
 async function checkSplitPending (userId) {
     const splitCollection = await split();
 
-    let getPending = await splitCollection.find( { "requestFlag.userId": ObjectId(userId) } ).toArray();
-    let getPendingArr = [];
-    if (getPending.length > 0) {
-        for (i=0; i<getPending.length; i++) {
-            for (j=0; j<getPending[i].requestFlag.length; j++) {
-                if (getPending[i].requestFlag[j].userId.toString() === ObjectId(userId).toString() && getPending[i].requestFlag[j].flag === true){
-            
-                }
-                getPendingArr.push(getPending.splice(i, 1));
+    let pendingTransactionsArr = new Array();
+    let getAllSplitTransactionsOfUser = await splitCollection.find({"requestFlag.userId": ObjectId(userId)}).toArray();
+    for (let i in getAllSplitTransactionsOfUser) {
+        for (let j in getAllSplitTransactionsOfUser[i].requestFlag) {
+            if (getAllSplitTransactionsOfUser[i].requestFlag[j].userId.toString() === ObjectId(userId).toString() && getAllSplitTransactionsOfUser[i].requestFlag[j].flag === false) {
+                pendingTransactionsArr.push(getAllSplitTransactionsOfUser[i]);
             }
         }
     }
-    let finalArr = [];
-    for (i=0; i<1; i++){
-        for(j=0; j<getPendingArr.length; j++){
-            finalArr.push(getPendingArr[j][i]);
-        }
-    }
-    return finalArr;
+    
+    return pendingTransactionsArr;
 }
 
 async function cancelSplit (splitId, userId) {
@@ -85,6 +94,10 @@ async function cancelSplit (splitId, userId) {
 
     let splitTransactionDetails = await getSplitTransaction(splitId);
     let userInfo = await requireUsers.getUser(userId);
+    // check if transaction found
+    if (!userInfo) {
+        throw "User not found!"
+    }
 
     for (i in splitTransactionDetails.requestFlag) {
         if(splitTransactionDetails.requestFlag[i].userId.toString() === userId.toString())
@@ -119,8 +132,6 @@ async function getSplitTransaction (splitId) {
     else
         return getSplitDetails;
 }
-
-cancelSplit("5df4396b7d427117241473cd", "5df42ea6ed991316cee2f2b6");
 
 module.exports = {
     updateSplitCalculation,

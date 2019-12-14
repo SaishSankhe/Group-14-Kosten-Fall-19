@@ -1,9 +1,17 @@
 const mongoCollections = require("../config/mongoCollections");
 const users = mongoCollections.users;
+const requireUsers = require("./users")
 const bcrypt = require("bcrypt");
 
 async function checkCredentials(userEmail, password) {
     let usersData = await getAllUsers();
+    userEmail = userEmail.toLowerCase();
+    
+    // check if user is registered
+    let userInfo = await requireUsers.getUserByEmail(userEmail.trim());
+    if (!userInfo) {
+      throw "You are not a registered user!";
+    }
 
     if (!userEmail || !password)
       throw "Credentials cannot be left blank!";
@@ -32,7 +40,7 @@ async function checkCredentials(userEmail, password) {
     }
 
     if (compare === false)
-      return false;
+      throw "Credentials provided are incorrect!";
 }
 
 async function getAllUsers () {

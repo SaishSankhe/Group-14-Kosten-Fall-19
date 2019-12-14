@@ -7,20 +7,31 @@ const ObjectId = require('mongodb').ObjectID;
 async function createRequest (requestDetails) {
     const requestCollection = await requested();
 
-    let requesterId = requestDetails.requesterId;
-    let granterEmail = requestDetails.granterEmail;
-    let amount = requestDetails.amount;
+    let requesterId = requestDetails.requesterId.trim();
+    let granterEmail = requestDetails.granterEmail.toLowerCase().trim();
+    let amount = requestDetails.amount.trim();
     let date_time = requestDetails.date_time;
 
     let requesterInfo = await requireUsers.getUser(requesterId);
     let granterInfo = await requireUsers.getUserByEmail(granterEmail);
+
+    // check if requester found
+    if (!requesterInfo) {
+        throw "Requester not found!"
+    }
+
+    // check if granter is a registered user
+    if (!granterInfo) {
+        throw "You cannot request money from unregistered user!"
+    }
+
     let granterId = granterInfo._id;
 
     let requestDetailsObj = {
         requesterId: ObjectId(requesterId),
         granterId: granterId,
         amount: amount,
-        remark: requestDetails.remark,
+        remark: requestDetails.remark.trim(),
         date_time: date_time,
         requestFlag: false
     }
@@ -32,6 +43,8 @@ async function createRequest (requestDetails) {
     const newRequestId = insertRequestInfo.insertedId;
     requesterInfo.transactionIds.requested.push(newRequestId);
     await requireUsers.updateTransactionIds(requesterInfo);
+
+    return true;
 }
 
 async function acceptRequest (requestId) {
@@ -39,11 +52,23 @@ async function acceptRequest (requestId) {
 
     let requestInfo = await getRequestInfo(requestId);
 
-    const requestAmount = requestInfo.amount;
+    const requestAmount = requestInfo.amount.trim();
     let requesterInfo = await requireUsers.getUser(requestInfo.requesterId);
+
+    // check if requester found
+    if (!requesterInfo) {
+        throw "Requester not found!"
+    }
+
     let granterInfo = await requireUsers.getUser(requestInfo.granterId);
 
+    // check if granter found
+    if (!requestgranterInfoerInfo) {
+        throw "Granter not found!"
+    }
+
     let isEnoughBalance = checkGranterBalance(granterInfo.currentAmount, requestAmount)
+    
     if (isEnoughBalance === true) {
         let granterCurrentAmount = parseFloat(granterInfo.currentAmount) - parseFloat(requestAmount);
         granterInfo.currentAmount = granterCurrentAmount.toString()
@@ -64,7 +89,8 @@ async function acceptRequest (requestId) {
         else
             return true;
     }
-    return false;
+    else
+        throw "You do not have enough money to approve this request!";
 }
 
 async function declineRequest (requestId) {
@@ -72,6 +98,11 @@ async function declineRequest (requestId) {
 
     let requestInfo = await getRequestInfo(requestId);
     let requesterInfo = await requireUsers.getUser(requestInfo.requesterId);
+
+    // check if requester found
+    if (!requesterInfo) {
+        throw "Requester not found!"
+    }
 
     for (let i in requesterInfo.transactionIds.requested) {
         if (requesterInfo.transactionIds.requested[i].toString() === requestId.toString()) {
@@ -107,7 +138,9 @@ function checkGranterBalance (currentAmount, requestAmount) {
 
 async function getRequestInfo (requestId) {
     const requestCollection = await requested();
+
     let getRequestDetails = await requestCollection.findOne({_id: ObjectId(requestId)});
+
     if(!getRequestDetails)
         return false;
     else

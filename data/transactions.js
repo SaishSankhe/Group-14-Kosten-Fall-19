@@ -54,7 +54,7 @@ async function addTransaction (userId, transactionDet) {
                 let findUserIdArr = [];
 
                 for (let i in transactionDet.requestFlag) {
-                    let userEmailId = transactionDet.requestFlag[i]
+                    let userEmailId = transactionDet.requestFlag[i].toLowerCase();
                     let findUser = await requireUsers.getUserByEmail(userEmailId);
                     let findUserId = findUser._id;
                     findUserIdArr.push(findUserId);
@@ -98,7 +98,7 @@ async function addTransaction (userId, transactionDet) {
         }
     // }
     // else {
-    //     return false;
+    //     throw "You do not have enough money to add this transaction!";
     // }
 
     if(type === "credit") {
@@ -431,52 +431,6 @@ async function updateTransaction (transactionId, newTransactionDet) {
             return false;
 
         if(type === "debit") {
-            // if (newTransactionDet.split.bool === true) {
-            //     const splitCollection = await split();
-            //     let noOfUsers = newTransactionDet.requestFlag.length + 1;
-            //     let splitAmount = parseFloat(newAmount)/noOfUsers;
-            //     let splitDetailsObj = {
-            //         transactionId: transactionId,
-            //         superUserId: userInfo._id,
-            //         bool: true,
-            //         splitAmount: splitAmount,
-            //         requestFlag:[]
-            //     }
-
-            //     let findUserIdArr = [];
-
-            //     for (let i in newTransactionDet.requestFlag) {
-            //         let userEmailId = newTransactionDet.requestFlag[i]
-            //         let findUser = await requireUsers.getUserByEmail(userEmailId);
-            //         let findUserId = findUser._id;
-            //         findUserIdArr.push(findUserId);
-            //     }
-
-            //     for (let i in findUserIdArr) {
-            //         let userObj = {
-            //             userId: findUserIdArr[i], 
-            //             flag: false
-            //         }
-            //         splitDetailsObj.requestFlag.push(userObj);
-            //     }
-
-            //     let insertSplitInfo = await splitCollection.insertOne(splitDetailsObj);
-            //     if (insertSplitInfo.insertedCount === 0) 
-            //         return false;
-
-            //     let newSplitId = insertSplitInfo.insertedId;
-            //     getTransactionDetails.split.splitId = newSplitId;
-            //     let updateSplitIdInfo = await transactionCollection.updateOne({_id: ObjectId(transactionId)}, {$set: getTransactionDetails});
-            //     if (updateSplitIdInfo.modifiedCount === 0)
-            //         return false;
-
-            //     await requireUsers.updateUserSplitCreditInfo(userInfo, newSplitId);
-                
-            //     for (let i in findUserIdArr) {
-            //         await requireUsers.updateUserSplitDebitInfo(findUserIdArr[i], newSplitId);
-            //     }
-            // }
-
             let intUpdatedAmount = parseFloat(userInfo.currentAmount) - parseFloat(newAmount);
             let updatedAmount = intUpdatedAmount.toString();
             userInfo.currentAmount = updatedAmount;

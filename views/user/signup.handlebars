@@ -1,20 +1,39 @@
-<h2> Signup </h2>
+<h2 class="display-2 text-white font-weight-bold"> Signup </h2>
 {{#if error}}
     <p class="{{class}}">{{error}}</p>
 {{/if}}
 <form action="/signup" method="POST" id="login-form">
-    <label for="fName">First Name:</label>
-    <input type="text" name="fName" id="fName" required>
+    <div class="row text-white">
+        <div class="col-md-12">
+            <div class="form-group col-md-6" >
+                <label for="fName">First Name:</label>
+                <input type="text" class="form-control" name="fName" id="fName" required>
+            </div>
+        </div>
     <br/>
-    <label for="lName">Last Name:</label>
-    <input type="text" name="lName" id="lName" required>
+    <div class="col-md-12">
+            <div class="form-group col-md-6" >
+                <label for="lName">Last Name:</label>
+                <input type="text" class="form-control" name="lName" id="lName" required>
+            </div>
+        </div>
     <br/>
-    <label for="email">Email:</label>
-    <input type="text" name="email" id="email" required>
+    <div class="col-md-12">
+            <div class="form-group col-md-6" >
+                <label for="email">Email:</label>
+                <input type="text" class="form-control" name="email" id="email"  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+            </div>
+        </div>
     <br/>
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password" required>
+    <div class="col-md-12">
+            <div class="form-group col-md-6" >
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" name="password" id="password" required>
+            </div>
+        </div>
     <br/>
-    <button type="submit" id="submit">Sign Up</button>
+        <button type="submit" type="button" class="btn btn-default ml-5" id="submit">Sign Up</button>
+    </div>
 </form>
+<br/>
 <a href="/login">Login</a>

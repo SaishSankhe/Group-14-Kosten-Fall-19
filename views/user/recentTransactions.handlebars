@@ -1,28 +1,33 @@
 {{#if recentTransactions}}
+    <h2 class="display-2 text-white font-weight-bold">Recent Transactions</h2>
     {{#if error}}
-        <p class="{{class}}">{{error}}</p>
+        <p class="{{class}} text-white">{{error}}</p>
     {{/if}}
-    <h2>recentTransactions</h2>
-    <ol>
+    <ol class="font-weight-bold">
         {{#each recentTransactions}}
-        <li>
+        <li class="text-white heading-small text-sm">
             Transaction Name: {{transactionName}} <br/>
             Amount: {{amount}} <br/>
             Type: {{type}} <br/>
             Category: {{category}} <br/>
             {{#if split.bool}}
-                Split: Yes <br/>
+                Split: Yes
+            {{else}}
+                Split: No
+                <br/>
+                <div class="row">
+                <button type="submit" type="button" class="btn btn-secondary btn-sm mt-2 mb-2">
+                    <a href="/transaction/{{_id}}">Edit Transaction</a>
+                </button>
+                
+                <form action="/transaction/{{_id}}?_method=DELETE" method="POST">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="transactionId" value="{{_id}}">
+                    <button type="submit" type="button" class="btn btn-warning btn-sm mt-2 mb-2">Delete Transaction</button>
+                </form>
+                </div>
             {{/if}}
-            {{!-- <form action="/transaction/{{_id}}?_method=PUT" method="POST">
-                <input type="hidden" name="_method" value="PUT">
-                <button type="submit">Edit Transaction</button>
-            </form> --}}
-            <a href="/transaction/{{_id}}">Edit Transaction</a>
-            <form action="/transaction/{{_id}}?_method=DELETE" method="POST">
-                <input type="hidden" name="_method" value="DELETE">
-                <input type="hidden" name="transactionId" value="{{_id}}">
-                <button type="submit">Delete Transaction</button>
-            </form>
+            
         </li>
         {{/each}}
     </ol>

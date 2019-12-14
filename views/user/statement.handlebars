@@ -1,11 +1,131 @@
-<h2>Statement</h2>
-{{!-- <p>grocery: {{budgetInfo.budgetValues.grocery}}</p>
-<p>entertainment: {{budgetInfo.budgetValues.entertainment}}</p>
-<p>eatingOut: {{budgetInfo.budgetValues.eatingOut}}</p>
-<p>bills: {{budgetInfo.budgetValues.bills}}</p>
-<p>savings: {{budgetInfo.budgetValues.savings}}</p>
-<p>misc: {{budgetInfo.budgetValues.misc}}</p>
-<p>transportation: {{budgetInfo.budgetValues.transportation}}</p>
-<p>departmentalStore: {{budgetInfo.budgetValues.departmentalStore}}</p> --}}
+<h2 class="display-2 text-white font-weight-bold">Statement</h2>
+
+{{#if creditDebit}}
+<h3 class="text-white font-weight-bold">Credit, Debit Transactions</h3>
+    <ul>
+        {{#each creditDebit}}
+        <li class="text-white heading-small text-sm">
+            Transaction Name: {{transactionName}}
+            <br/>
+            Amount: <span class="font-weight-bold">{{amount}}</span>
+            <br/>
+            Type: {{type}}
+            <br/>
+            Category: {{category}}
+            <br/>
+            Date: {{date_time}}
+            <br>
+        </li>
+        {{/each}}
+    </ul>
+{{/if}}
+
+{{#if sender}}
+<h3 class="text-white font-weight-bold">Sent Money</h3>
+    <ul>
+        {{#each sender}}
+        <li class="text-white heading-small text-sm">
+            Remark: {{remark}}
+            <br/>
+            Amount: {{amount}}
+            <br/>
+            Sent to: {{receiverName}}
+            <br/>
+            Date: {{date_time}}
+            <br>
+        </li>
+        {{/each}}
+    </ul>
+{{/if}}
+
+{{#if receiver}}
+<h3 class="text-white font-weight-bold">Received Money</h3>
+    <ul>
+        {{#each receiver}}
+        <li class="text-white heading-small text-sm">
+            Remark: {{remark}}
+            <br/>
+            Amount: {{amount}}
+            <br/>
+            Sent by: {{senderName}}
+            <br/>
+            Date: {{date_time}}
+            <br>
+        </li>
+        {{/each}}
+    </ul>
+{{/if}}
+
+{{#if requester}}
+<h3 class="text-white font-weight-bold">Requested Money</h3>
+    <ul>
+        {{#each requester}}
+        <li class="text-white heading-small text-sm">
+            Remark: {{remark}}
+            <br/>
+            Amount: {{amount}}
+            <br/>
+            Granted by: {{granterName}}
+            <br/>
+            Date: {{date_time}}
+            <br>
+        </li>
+        {{/each}}
+    </ul>
+{{/if}}
+
+{{#if granter}}
+<h3 class="text-white font-weight-bold">Granted Money</h3>
+    <ul>
+        {{#each granter}}
+        <li class="text-white heading-small text-sm">
+            Remark: {{remark}}
+            <br/>
+            Amount: {{amount}}
+            <br/>
+            Requested by: {{requesterName}}
+            <br/>
+            Date: {{date_time}}
+            <br>
+        </li>
+        {{/each}}
+    </ul>
+{{/if}}
+
+{{#if splitDebit}}
+<h3 class="text-white font-weight-bold">Amount paid in splits</h3>
+    <ul>
+        {{#each splitDebit}}
+        <li class="text-white heading-small text-sm">
+            transactionName: {{transactionName}}
+            <br/>
+            Amount debited: {{splitAmount}}
+            <br/>
+            Category: {{category}}
+            <br/>
+            Date: {{date_time}}
+            <br>
+        </li>
+        {{/each}}
+    </ul>
+{{/if}}
+
+{{#if splitCredit}}
+<h3 class="text-white font-weight-bold">Amount received in splits</h3>
+    <ul>
+        {{#each splitCredit}}
+        <li class="text-white heading-small text-sm">
+            transactionName: {{transactionName}}
+            <br/>
+            Amount credited: {{creditedAmount}}
+            <br/>
+            Category: {{category}}
+            <br/>
+            Date: {{date_time}}
+            <br>
+        </li>
+        {{/each}}
+    </ul>
+{{/if}}
 
 <a href="/dashboard"> Dashboard </a>

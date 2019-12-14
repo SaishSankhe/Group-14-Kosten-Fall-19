@@ -94,15 +94,15 @@
             </thead>
             
             <tbody>
-                {{#each requestPending}}
+                {{#each splitPending}}
                 <tr>
                 <th scope="row">
-                    {{splitAmount}}
+                    $ {{splitAmount}}
                 </th>
                 <td>
-                    <div class="col text-right">
-                        <a href="/request/accept/{{_id}}" class="btn btn-sm btn-primary">Pay</a>
-                        <a href="/request/decline/{{_id}}" class="btn btn-sm btn-primary">Cancel</a>
+                    <div class="col text-left">
+                        <a href="/transaction/splitAccept/{{_id}}" class="btn btn-sm btn-primary">Pay</a>
+                        <a href="/transaction/splitDecline/{{_id}}" class="btn btn-sm btn-primary">Cancel</a>
                     </div>
                 </td>
                 </tr>

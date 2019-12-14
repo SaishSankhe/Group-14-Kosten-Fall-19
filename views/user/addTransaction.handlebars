@@ -1,39 +1,61 @@
-<h2> Add Transaction </h2>
+<h2 class="display-2 text-white font-weight-bold"> Add Transaction </h2>
 {{#if error}}
-    <p class="{{class}}">{{error}}</p>
+    <p class="{{class}} text-white">{{error}}</p>
 {{/if}}
 <form action="/transaction" method="POST" id="add-transaction">
-    <label for="transactionName">Transaction name:</label>
-    <input type="text" name="transactionName" id="transactionName" required>
-    <br/>
-    <label for="amount">Amount:</label>
-    <input type="text" name="amount" id="amount" required>
-    <br/>
-    <label for="type">Type:</label>
-    <select id="type" name="type" onchange="splitList()">
-        <option value="credit">Credit</option>
-        <option value="debit">Debit</option>
-    </select>
-    <br/>
-    <div id="add-here">
-        <div id="container"> </div>
-    </div>
-    <br/>
-    <label for="category">Category:</label>
-    <select id="category" name="category">
-        <option value="grocery">Grocery</option>
-        <option value="entertainment">Entertainment</option>
-        <option value="eatingOut">Eating out</option>
-        <option value="bills">Bills</option>
-        <option value="savings">Savings</option>
-        <option value="misc">Miscellaneous</option>
-        <option value="transportation">Transportation</option>
-        <option value="departmentalStore">Departmental store</option>
-    </select>
-    <br/>
-    <button type="submit" id="submit">Add Transaction</button>
+    <div class="row text-white">
+        <div class="col-md-12">
+            <div class="form-group col-md-6" >
+                <label for="transactionName">Transaction name:</label>
+                <input type="text" class="form-control" name="transactionName" id="transactionName" required>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group col-md-6" >
+                <label for="amount">Amount:</label>
+                <input type="text" class="form-control" name="amount" id="amount" required>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group col-md-6" >
+                <label for="type">Type:</label>
+                <select id="type" class="form-control" name="type" onchange="splitList()">
+                    <option value="credit">Credit</option>
+                    <option value="debit">Debit</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group col-md-6 text-white" >
+                <div id="add-here">
+                    <div id="container">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group col-md-6" >
+                <label for="category">Category:</label>
+                <select id="category" class="form-control" name="category">
+                    <option value="grocery">Grocery</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="eatingOut">Eating out</option>
+                    <option value="bills">Bills</option>
+                    <option value="savings">Savings</option>
+                    <option value="misc">Miscellaneous</option>
+                    <option value="transportation">Transportation</option>
+                    <option value="departmentalStore">Departmental store</option>
+                </select>
+            </div>
+        </div>
+    
+    <button type="submit" type="button" class="btn btn-default ml-4" id="submit">Add Transaction</button>
 </form>
-<br/>
-<a href="/dashboard">Dashboard</a>
+
 <script src="/public/js/addTransaction.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

@@ -5,16 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{{title}}</title>
-    <!-- Favicon -->
-    <link href="../../public/img/brand/favicon.png" rel="icon" type="image/png">
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
-    <!-- Icons -->
     <!-- Icons -->
     <link href="../../public/js/plugins/nucleo/css/nucleo.css" rel="stylesheet" />
     <link href="../../public/js/plugins/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet" />
     <!-- CSS Files -->
-    <link href="../../public/css/argon-dashboard.css?v=1.1.0" rel="stylesheet" />
+    <link href="../../public/css/argon-dashboard.min.css" rel="stylesheet" />
 </head>
 <body>
     <nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white" id="sidenav-main">
@@ -24,66 +21,17 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <!-- Brand -->
-      <a class="navbar-brand pt-0" href="user/dashboard">
+      <a class="navbar-brand pt-0" href="/dashboard">
         <img src="../../public/img/brand/blue.png" class="navbar-brand-img" alt="...">
       </a>
-      <!-- User -->
-      <ul class="nav align-items-center d-md-none">
-        <li class="nav-item dropdown">
-          <a class="nav-link nav-link-icon" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="ni ni-bell-55"></i>
-          </a>
-          <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right" aria-labelledby="navbar-default_dropdown_1">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <div class="media align-items-center">
-              <span class="avatar avatar-sm rounded-circle">
-                <img alt="Image placeholder" src="../../public/img/theme/team-1-800x800.jpg">
-              </span>
-            </div>
-          </a>
-          <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right">
-            <div class=" dropdown-header noti-title">
-              <h6 class="text-overflow m-0">Welcome!</h6>
-            </div>
-            <a href="./examples/profile.html" class="dropdown-item">
-              <i class="ni ni-single-02"></i>
-              <span>My profile</span>
-            </a>
-            <a href="./examples/profile.html" class="dropdown-item">
-              <i class="ni ni-settings-gear-65"></i>
-              <span>Settings</span>
-            </a>
-            <a href="./examples/profile.html" class="dropdown-item">
-              <i class="ni ni-calendar-grid-58"></i>
-              <span>Activity</span>
-            </a>
-            <a href="./examples/profile.html" class="dropdown-item">
-              <i class="ni ni-support-16"></i>
-              <span>Support</span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a href="#!" class="dropdown-item">
-              <i class="ni ni-user-run"></i>
-              <span>Logout</span>
-            </a>
-          </div>
-        </li>
-      </ul>
-      <!-- Collapse -->
+       <!-- Collapse -->
       <div class="collapse navbar-collapse" id="sidenav-collapse-main">
         <!-- Collapse header -->
         <div class="navbar-collapse-header d-md-none">
           <div class="row">
             <div class="col-6 collapse-brand">
               <a href="./index.html">
-                <img src="./public/img/brand/blue.png">
+                <img src="../../public/img/brand/blue.png">
               </a>
             </div>
             <div class="col-6 collapse-close">
@@ -94,45 +42,34 @@
             </div>
           </div>
         </div>
-        <!-- Form -->
-        <form class="mt-4 mb-3 d-md-none">
-          <div class="input-group input-group-rounded input-group-merge">
-            <input type="search" class="form-control form-control-rounded form-control-prepended" placeholder="Search" aria-label="Search">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                <span class="fa fa-search"></span>
-              </div>
-            </div>
-          </div>
-        </form>
         <!-- Navigation -->
         <ul class="navbar-nav">
           <li class="nav-item {{dashActive}}">
           <a class=" nav-link {{dashActive}}" href="/dashboard"> <i class="ni ni-tv-2 text-primary"></i> Dashboard
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link " href="/transaction">
-              <i class="ni ni-planet text-blue"></i> Add Transaction
+          <li class="nav-item {{transActive}}">
+            <a class="nav-link {{transActive}}" href="/transaction">
+              <i class="ni ni-planet text-blue "></i> Add Transaction
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link " href="/send">
+          <li class="nav-item {{sendActive}}">
+            <a class="nav-link {{sendActive}}" href="/send">
               <i class="ni ni-pin-3 text-orange"></i> Send Money
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link " href="/request">
+          <li class="nav-item {{reqActive}}">
+            <a class="nav-link {{reqActive}}" href="/request">
               <i class="ni ni-single-02 text-yellow"></i> Request Money
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link " href="/recentTransactions">
+          <li class="nav-item {{recentActive}}">
+            <a class="nav-link {{recentActive}}" href="/recentTransactions">
               <i class="ni ni-bullet-list-67 text-red"></i> Recent Transaction
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/statement">
+          <li class="nav-item {{viewActive}}">
+            <a class="nav-link {{viewActive}}" href="/statement">
               <i class="ni ni-key-25 text-info"></i> View Statement
             </a>
           </li>
@@ -141,13 +78,13 @@
               <i class="ni ni-circle-08 text-pink"></i> Pending Requests
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/budget">
+          <li class="nav-item {{budgetActive}}">
+            <a class="nav-link {{budgetActive}}" href="/budget">
               <i class="ni ni-circle-08 text-pink"></i> Add Budget
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/budget/my-budget">
+          <li class="nav-item {{viewBudActive}}">
+            <a class="nav-link {{viewBudActive}}" href="/budget/my-budget">
               <i class="ni ni-circle-08 text-pink"></i> View Budget
             </a>
           </li>
@@ -159,16 +96,31 @@
           <li class="nav-item">
             <form action="/dashboard/{{userInfo._id}}?_method=DELETE" method="POST">
                 <input type="hidden" name="_method" value="DELETE">
-                <button type="submit">Delete my account</button>
+                <button type="submit" type="button" class="btn btn-warning" >Delete my account</button>
             </form>
           </li>
         </ul>
+        <ul class="navbar-nav ">
+          <li class="nav-item {{signupActive}}" id="signup">
+            <a class="nav-link {{signupActive}}" href="/signup">
+              <i class="ni ni-circle-08 text-pink"></i> Signup
+            </a>
+          </li>
+          <li class="nav-item {{loginActive}}" id="login">
+            <a class="nav-link {{loginActive}}" href="/login">
+              <i class="ni ni-circle-08 text-pink"></i> Login
+            </a>
+          </li>
+        </ul>
+      </div>
+        
         <!-- Divider -->
         <hr class="my-3">
       </div>
     </div>
     </nav>
     <div class="main-content">
+      {{#if userInfo}}
         <!-- Navbar -->
         <nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
         <div class="container-fluid">
@@ -189,6 +141,7 @@
         </div>
         </nav>
         <!-- End Navbar -->
+        {{/if}}
         <!-- Header -->
         <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
             <div class="container-fluid">
@@ -198,5 +151,8 @@
             </div>
         </div>
     </div>
+    <!--   Core   -->
+    <script src="./assets/js/plugins/jquery/dist/jquery.min.js"></script>
+    <script src="./assets/js/plugins/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

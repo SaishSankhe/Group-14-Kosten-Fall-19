@@ -2,30 +2,33 @@
     {{#if error}}
         <p class="{{class}}">{{error}}</p>
     {{/if}}
-    <h2>Split Requests</h2>
+    <h2 class="text-white font-weight-bold">Split Requests</h2>
     <ol>
         {{#each splitPending}}
-        <li>
+        <li class="text-white heading-small text-sm">
             Amount: {{splitAmount}}
             <a href="/transaction/splitAccept/{{_id}}">Pay</a>
             <a href="/transaction/splitDecline/{{_id}}">Cancel</a>
         </li>
         {{/each}}
     </ol>
+{{else}}
+    <h2 class="text-white font-weight-bold">No pending split requests. Yay!</h2>
 {{/if}}
 {{#if requestPending}}
     {{#if error}}
         <p class="{{class}}">{{error}}</p>
     {{/if}}
-    <h2>Requested Money</h2>
+    <h2 class="text-white font-weight-bold">Requested Money</h2>
     <ol>
         {{#each requestPending}}
-        <li>
+        <li class="text-white heading-small text-sm">
             Amount: {{amount}}
             <a href="/request/accept/{{_id}}">Pay</a>
             <a href="/request/decline/{{_id}}">Cancel</a>    
         </li>
         {{/each}}
     </ol>
+{{else}}
+    <h2 class="text-white font-weight-bold">No pending requests for requested money. Great!</h2>
 {{/if}}
-<a href="/dashboard">Dashboard</a>

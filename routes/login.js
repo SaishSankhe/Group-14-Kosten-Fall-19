@@ -8,26 +8,35 @@ const requireRequest = data.request;
 const loginData = data.login;
 
 router.get('/', async (req, res) => {
-  res.render("user/login-form", {title: "Login"});
+  res.render("user/login-form", {title: "Login", loginActive: "active"});
 });
 
 router.post('/', async (req, res) => {
   let credentials = req.body;
-  let userEmail = credentials.email;
+  let userEmail = credentials.email.toLowerCase().trim();
   let password = credentials.password;
 
-  // try {
-  //   if (!userEmail || !password)
-  //     throw "Credentials cannot be left blank!";
-  //   if (userEmail === null || password === null)
-  //     throw "Credentials cannot be null!";
-  // } catch (e) {
-  //     res.render("somehandlebar/login", {errorMessage: e, title:"Check Credentials" , class: "error"});
-  // }
+  // check if username and password are entered
+  try {
+    if (!userEmail || !password)
+      throw "Credentials cannot be left blank!";
+    if (userEmail === null || password === null)
+      throw "Credentials cannot be null!";
+  } catch (e) {
+      res.render("user/login-form", {errorMessage: e, title:"Check Credentials" , class: "error", loginActive: "active"});
+  }
+
+  // check if user is registered
+  let userId = await requireUsers.getUserByEmail(userEmail);
+  try {
+    if (!userId) {
+      throw "You are not a registered user!"
+    }
+  } catch (e) {
+      res.render("user/login-form", {errorMessage: e, title:"User Not Registered" , class: "error", loginActive: "active"});
+  }
 
   const checkPassword = await loginData.checkCredentials(userEmail, password);
-
-  let userInfo = await requireUsers.getUser(checkPassword.userId);
 
   if (checkPassword.compare === true) {
     req.session.name = 'AuthCookie';
@@ -35,7 +44,7 @@ router.post('/', async (req, res) => {
     res.redirect("/dashboard");
   }
   else {
-    res.status(401).render("user/login-form", {errorMessage: "Credentials incorrect!", title: "Incorrect Credentials", class: "error"});
+    res.status(401).render("user/login-form", {errorMessage: "Credentials incorrect!", title: "Incorrect Credentials", class: "error", loginActive: "active"});
   }
 });
 

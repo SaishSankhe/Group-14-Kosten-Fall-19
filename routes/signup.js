@@ -4,15 +4,15 @@ const requireUsers =  require("../data/users")
 const session = require('express-session');
 
 router.get('/', async (req, res) => {
-  res.render("user/signup", {title: "Sign Up"});
+  res.render("user/signup", {title: "Sign Up", signupActive: "active"});
 });
 
 router.post("/", async (req, res) => {
     let formData = req.body;
-    let userEmail = formData.email;
+    let userEmail = formData.email.toLowerCase().trim();
     let pass = formData.password;
-    let firstName = formData.fName;
-    let lastName = formData.lName;
+    let firstName = formData.fName.trim();
+    let lastName = formData.lName.trim();
     
     let checkUser = await requireUsers.getUserByEmail(userEmail);
 
@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
         email: userEmail,
         password: pass,
       }
-  
+
       let userObj = await requireUsers.addUser(userDetails);
       
       if (userObj.flag === true) {
@@ -33,20 +33,11 @@ router.post("/", async (req, res) => {
         res.render("user/dashboard", {userInfo: userInfo});
       }
       else
-        res.render("user/signup", {error: "Error: Credentials do not match!", class:"error", title: "Login"})
+        res.render("user/signup", {error: "Credentials provided do not match!", class:"error", title: "Login", signupActive: "active"})
     }
     else {
-      res.render("user/signup", {error: "Email registered!", message: "Email already registered", class:"error"});
+      res.render("user/signup", {error: "Email registered!", message: "Email already registered", class:"error", signupActive: "active"});
     }
-
-    // try {
-    //   if (!userEmail || !pass || !firstName || !lastName)
-    //     throw "Error: Username, password, first name and last name cannot be empty!"
-    //   if(userEmail == undefined || pass == undefined || firstName == undefined || lastName == undefined)
-    //     throw "Error: Username, password, first name and last name cannot be undefined."
-    // } catch (e) {
-    //     res.render("user/login-form", {error: e, class:"error", title: "Login"})
-    // }
 
 });
 

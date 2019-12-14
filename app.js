@@ -11,7 +11,6 @@ const loginRouter = require("./routes/login");
 const resetpassRouter = require("./routes/resetpass");
 const logoutRouter = require("./routes/logout");
 const dashbaordRouter = require("./routes/dashboard");
-const profileRouter = require("./routes/profile");
 const transactionRouter = require("./routes/transaction");
 const recentTransactionsRouter = require("./routes/recentTransactions");
 const sendRouter = require("./routes/send");
@@ -32,14 +31,14 @@ app.use(session({
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
-app.listen(3001, () => {
+app.listen(3000, () => {
   console.log("We've now got a server!");
-  console.log('Your routes will be running on http://localhost:3001');
+  console.log('Your routes will be running on http://localhost:3000');
 });
 
 const redirectPrivate = (req, res, next) => {
   if(!req.session.userId) {
-      res.status(403).render("user/error", {error: "Error: You are not logged in!", class: "error", title: "Error page"})
+      res.status(403).render("user/login-form", {error: "You are not logged in! Please Login or Signup.", class: "error", title: "Login"})
   }
   else
     next();
@@ -47,7 +46,7 @@ const redirectPrivate = (req, res, next) => {
 
 app.get("/", async (req, res) => {
   if(!req.session.userId)
-    res.render("user/signup", {title: "Signup"});
+    res.render("user/login-form", {title: "Login"});
   else
     res.redirect("/dashboard");
 });
@@ -56,12 +55,10 @@ app.use("/login", loginRouter);
 app.use("/logout", logoutRouter);
 app.use("/dashboard", redirectPrivate, dashbaordRouter);
 app.use("/signup", signupRouter);
-app.use("/transaction", transactionRouter);
+app.use("/transaction", redirectPrivate, transactionRouter);
 // app.use("/resetpass", resetpassRouter);
-// app.use("/profile", profileRouter);
-app.use("/recentTransactions", recentTransactionsRouter);
-app.use("/send", sendRouter);
-app.use("/request", requestRouter);
-// app.use("/statement", statementRouter);
-app.use("/budget", budgetRouter);
-// app.use("/pending", pendingRouter);
+app.use("/recentTransactions", redirectPrivate, recentTransactionsRouter);
+app.use("/send", redirectPrivate, sendRouter);
+app.use("/request", redirectPrivate, requestRouter);
+app.use("/statement", redirectPrivate, statementRouter);
+app.use("/budget", redirectPrivate, budgetRouter);

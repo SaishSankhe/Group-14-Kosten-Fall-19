@@ -10,9 +10,9 @@ async function addBudget (userId, budgetDetails) {
 
     let insertInfo = await budgetCollection.insertOne(budgetObj);
     if (insertInfo.insertedCount === 0) 
-        throw 'Could not add the budget!';
+        throw "Could not add the budget!";
     
-        let budgetId = insertInfo.insertedId;
+    let budgetId = insertInfo.insertedId;
 
     let userInfo = await requireUsers.getUser(userId);
     userInfo.budgetId = budgetId;
@@ -25,7 +25,17 @@ async function resetBudget (userId) {
     const budgetCollection = await budget();
 
     let userInfo = await requireUsers.getUser(userId);
+
+    // check if user found
+    if (!userInfo) {
+        throw "User not found!";
+    }
+
+    // check income is greater than 0
     let userIncome = parseFloat(userInfo.income);
+    if (userIncome <= 0) {
+        throw "Income cannot be less than 0!"
+    }
 
     let budgetObj = {
         budgetPercent: {
@@ -75,10 +85,32 @@ async function getBudget (budgetId) {
 
     let budgetInfo = await budgetCollection.findOne({_id: ObjectId(budgetId)});
 
-    return budgetInfo;
+    // check if budget found
+    if (!budgetInfo) {
+        throw "Budget not found!";
+    }
+    else
+        return budgetInfo;
 }
 
 function setBudgetObj (userId, budgetDetails) {
+
+    // check if values add to 1
+    let totalPercent = parseFloat(budgetDetails.budgetPercent.grocery) + parseFloat(budgetDetails.budgetPercent.entertainment) + parseFloat(budgetDetails.budgetPercent.eatingOut) + parseFloat(budgetDetails.budgetPercent.bills) + parseFloat(budgetDetails.budgetPercent.savings) + parseFloat(budgetDetails.budgetPercent.misc) + parseFloat(budgetDetails.budgetPercent.transportation) + parseFloat(budgetDetails.budgetPercent.departmentalStore);
+    if (totalPercent !== 1) {
+        throw "Percent total should be 100!"
+    }
+
+    // check if values are negative
+    if (parseFloat(budgetDetails.budgetPercent.grocery) < 0 || parseFloat(budgetDetails.budgetPercent.entertainment) < 0 || parseFloat(budgetDetails.budgetPercent.eatingOut) < 0 || parseFloat(budgetDetails.budgetPercent.bills) < 0 || parseFloat(budgetDetails.budgetPercent.savings) < 0 || parseFloat(budgetDetails.budgetPercent.misc) < 0 || parseFloat(budgetDetails.budgetPercent.transportation) < 0 || parseFloat(budgetDetails.budgetPercent.departmentalStore) < 0) {
+        throw "Percent cannot be negative!";
+    }
+
+    // check income is greater than 0
+    if (parseFloat(budgetDetails.income) <= 0) {
+        throw "Income cannot be less than 0!"
+    }
+
     let grocery = parseFloat(budgetDetails.budgetPercent.grocery) * parseFloat(budgetDetails.income);
     let entertainment = parseFloat(budgetDetails.budgetPercent.entertainment) * parseFloat(budgetDetails.income);
     let eatingOut = parseFloat(budgetDetails.budgetPercent.eatingOut) * parseFloat(budgetDetails.income);
@@ -92,14 +124,14 @@ function setBudgetObj (userId, budgetDetails) {
         userId: ObjectId(userId),
         income: budgetDetails.income,
         budgetPercent: {
-            grocery: budgetDetails.budgetPercent.grocery,
-            entertainment: budgetDetails.budgetPercent.entertainment,
-            eatingOut: budgetDetails.budgetPercent.eatingOut,
-            bills: budgetDetails.budgetPercent.bills,
-            savings: budgetDetails.budgetPercent.savings,
-            misc: budgetDetails.budgetPercent.misc,
-            transportation: budgetDetails.budgetPercent.transportation,
-            departmentalStore: budgetDetails.budgetPercent.departmentalStore
+            grocery: budgetDetails.budgetPercent.grocery.trim(),
+            entertainment: budgetDetails.budgetPercent.entertainment.trim(),
+            eatingOut: budgetDetails.budgetPercent.eatingOut.trim(),
+            bills: budgetDetails.budgetPercent.bills.trim(),
+            savings: budgetDetails.budgetPercent.savings.trim(),
+            misc: budgetDetails.budgetPercent.misc.trim(),
+            transportation: budgetDetails.budgetPercent.transportation.trim(),
+            departmentalStore: budgetDetails.budgetPercent.departmentalStore.trim()
         },
         budgetValues: {
             grocery: grocery.toString(),
@@ -121,4 +153,4 @@ module.exports = {
     resetBudget,
     getBudget,
     updateBudget
-}
+};
