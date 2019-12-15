@@ -8,7 +8,6 @@ const exphbs = require('express-handlebars');
 
 const signupRouter = require("./routes/signup");
 const loginRouter = require("./routes/login");
-const resetpassRouter = require("./routes/resetpass");
 const logoutRouter = require("./routes/logout");
 const dashbaordRouter = require("./routes/dashboard");
 const transactionRouter = require("./routes/transaction");
@@ -17,6 +16,7 @@ const sendRouter = require("./routes/send");
 const requestRouter = require("./routes/request");
 const statementRouter = require("./routes/statement");
 const budgetRouter = require("./routes/budget");
+const groupRouter = require("./routes/group");
 
 app.use('/public', static);
 app.use(express.json());
@@ -56,9 +56,9 @@ app.use("/logout", logoutRouter);
 app.use("/dashboard", redirectPrivate, dashbaordRouter);
 app.use("/signup", signupRouter);
 app.use("/transaction", redirectPrivate, transactionRouter);
-// app.use("/resetpass", resetpassRouter);
 app.use("/recentTransactions", redirectPrivate, recentTransactionsRouter);
 app.use("/send", redirectPrivate, sendRouter);
 app.use("/request", redirectPrivate, requestRouter);
 app.use("/statement", redirectPrivate, statementRouter);
 app.use("/budget", redirectPrivate, budgetRouter);
+app.use("/group", groupRouter);

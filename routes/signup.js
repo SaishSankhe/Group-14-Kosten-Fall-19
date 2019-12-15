@@ -14,7 +14,8 @@ router.post("/", async (req, res) => {
     let firstName = formData.fName.trim();
     let lastName = formData.lName.trim();
     
-    let checkUser = await requireUsers.getUserByEmail(userEmail);
+    let checkUser;
+    checkUser = await requireUsers.getUserByEmail(userEmail);
 
     if (checkUser === false) {
       let userDetails = {
@@ -24,16 +25,28 @@ router.post("/", async (req, res) => {
         password: pass,
       }
 
-      let userObj = await requireUsers.addUser(userDetails);
-      
-      if (userObj.flag === true) {
-        let userInfo = await requireUsers.getUser(userObj.userId);
-        req.session.userId = userObj.userId;
-        req.session.name = "AuthCookie";
-        res.render("user/dashboard", {userInfo: userInfo});
+      let userObj;
+      try {
+        userObj = await requireUsers.addUser(userDetails);
+      } catch (e) {
+        return res.render("user/signup", {error: e, title:"User Not Added" , class: "error", signupActive: "active"});
       }
-      else
-        res.render("user/signup", {error: "Credentials provided do not match!", class:"error", title: "Login", signupActive: "active"})
+      
+      try {
+        if (userObj.flag === true) {
+          let userInfo = await requireUsers.getUser(userObj.userId);
+          if (!userInfo) {
+            throw "User not found!"
+          }
+          req.session.userId = userObj.userId;
+          req.session.name = "AuthCookie";
+          res.render("user/dashboard", {userInfo: userInfo});
+        }
+        else
+          return res.render("user/signup", {error: "Credentials provided do not match!", class:"error", title: "Login", signupActive: "active"})
+      } catch (e) {
+        return res.render("user/signup", {error: e, title:"User Not Found" , class: "error", signupActive: "active"});
+      }
     }
     else {
       res.render("user/signup", {error: "Email registered!", message: "Email already registered", class:"error", signupActive: "active"});

@@ -7,6 +7,7 @@ function splitList() {
             let splitOption = document.createElement("select");
             splitOption.id = "split";
             splitOption.name = "split";
+            splitOption.class = "form-control";
             addHere.appendChild(splitOption);
 
             for (let i = 0; i < array.length; i++) {
@@ -23,12 +24,15 @@ function splitList() {
             getNumber.type = "number";
             getNumber.id = "input";
             getNumber.name = "input";
+            getNumber.class = "form-control";
             addHere.appendChild(getNumber);
             let addButton = document.createElement('a');
             addButton.innerHTML = "Add";
             addButton.href = "#";
             addButton.id = "addButton";
             addButton.name = "addButton";
+            addButton.type = "button";
+            addButton.class = "btn btn-default ml-4";
             addHere.appendChild(addButton);
             let addButtonClick = document.getElementById("addButton")
             addButtonClick.addEventListener("click", function() {
@@ -44,6 +48,7 @@ function splitList() {
                     input.id = "person";
                     input.type = "email";
                     input.name = "person" + i;
+                    input.class = "form-control";
                     container.appendChild(input);
                     container.appendChild(document.createElement("br"));
                     $("#input").val(0);

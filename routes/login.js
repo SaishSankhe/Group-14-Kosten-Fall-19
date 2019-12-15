@@ -23,20 +23,26 @@ router.post('/', async (req, res) => {
     if (userEmail === null || password === null)
       throw "Credentials cannot be null!";
   } catch (e) {
-      res.render("user/login-form", {errorMessage: e, title:"Check Credentials" , class: "error", loginActive: "active"});
+      return res.render("user/login-form", {error: e, title:"Check Credentials" , class: "error", loginActive: "active"});
   }
 
   // check if user is registered
-  let userId = await requireUsers.getUserByEmail(userEmail);
+  let userId;
   try {
+    userId = await requireUsers.getUserByEmail(userEmail);
     if (!userId) {
-      throw "You are not a registered user!"
+      throw "User not found!"
     }
   } catch (e) {
-      res.render("user/login-form", {errorMessage: e, title:"User Not Registered" , class: "error", loginActive: "active"});
+    return res.render("user/login-form", {error: e, title: "User not found.", class: "error", loginActive: "active"})
   }
 
-  const checkPassword = await loginData.checkCredentials(userEmail, password);
+  let checkPassword;
+  try {
+    checkPassword = await loginData.checkCredentials(userEmail, password);
+  } catch (e) {
+    return res.render("user/login-form", {error: e, title: "Credentials Error", class: "error", loginActive: "active"});
+  }
 
   if (checkPassword.compare === true) {
     req.session.name = 'AuthCookie';
@@ -44,7 +50,7 @@ router.post('/', async (req, res) => {
     res.redirect("/dashboard");
   }
   else {
-    res.status(401).render("user/login-form", {errorMessage: "Credentials incorrect!", title: "Incorrect Credentials", class: "error", loginActive: "active"});
+    return res.status(401).render("user/login-form", {error: "Credentials incorrect!", title: "Incorrect Credentials", class: "error", loginActive: "active"});
   }
 });
 

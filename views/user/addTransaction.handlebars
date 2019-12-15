@@ -1,4 +1,4 @@
-<h2 class="display-2 text-white font-weight-bold"> Add Transaction </h2>
+<h1 class="display-2 text-white font-weight-bold"> Add Transaction </h1>
 {{#if error}}
     <p class="{{class}} text-white">{{error}}</p>
 {{/if}}
@@ -29,11 +29,9 @@
         </div>
 
         <div class="col-md-12">
-            <div class="form-group col-md-6 text-white" >
-                <div id="add-here">
-                    <div id="container">
-
-                    </div>
+            <div class="form-group col-md-6 text-white" id="add-here">
+                <div id="container" class="form-group text-white">
+                    
                 </div>
             </div>
         </div>
@@ -56,6 +54,3 @@
     
     <button type="submit" type="button" class="btn btn-default ml-4" id="submit">Add Transaction</button>
 </form>
-
-<script src="/public/js/addTransaction.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

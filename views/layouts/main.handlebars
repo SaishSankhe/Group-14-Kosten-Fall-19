@@ -22,7 +22,7 @@
       </button>
       <!-- Brand -->
       <a class="navbar-brand pt-0" href="/dashboard">
-        <img src="../../public/img/brand/blue.png" class="navbar-brand-img" alt="...">
+        <img src="../../public/img/brand/blue.png" class="navbar-brand-img" alt="Kosten logo">
       </a>
        <!-- Collapse -->
       <div class="collapse navbar-collapse" id="sidenav-collapse-main">
@@ -44,71 +44,76 @@
         </div>
         <!-- Navigation -->
         <ul class="navbar-nav">
-          <li class="nav-item {{dashActive}}">
+          <li class="nav-item active">
           <a class=" nav-link {{dashActive}}" href="/dashboard"> <i class="ni ni-tv-2 text-primary"></i> Dashboard
             </a>
           </li>
-          <li class="nav-item {{transActive}}">
+          <li class="nav-item active">
             <a class="nav-link {{transActive}}" href="/transaction">
-              <i class="ni ni-planet text-blue "></i> Add Transaction
+              <i class="ni ni-money-coins text-primary "></i> Add Transaction
             </a>
           </li>
-          <li class="nav-item {{sendActive}}">
+          <li class="nav-item active">
             <a class="nav-link {{sendActive}}" href="/send">
-              <i class="ni ni-pin-3 text-orange"></i> Send Money
+              <i class="ni ni-send text-primary"></i> Send Money
             </a>
           </li>
-          <li class="nav-item {{reqActive}}">
+          <li class="nav-item active">
             <a class="nav-link {{reqActive}}" href="/request">
-              <i class="ni ni-single-02 text-yellow"></i> Request Money
+              <i class="ni ni-delivery-fast text-primary"></i> Request Money
             </a>
           </li>
-          <li class="nav-item {{recentActive}}">
+          <li class="nav-item active ">
             <a class="nav-link {{recentActive}}" href="/recentTransactions">
-              <i class="ni ni-bullet-list-67 text-red"></i> Recent Transaction
+              <i class="ni ni-bullet-list-67 text-primary"></i> Recent Transaction
             </a>
           </li>
-          <li class="nav-item {{viewActive}}">
+          <li class="nav-item active">
             <a class="nav-link {{viewActive}}" href="/statement">
-              <i class="ni ni-key-25 text-info"></i> View Statement
+              <i class="ni ni-single-copy-04 text-primary"></i> View Statement
             </a>
           </li>
-          <li class="nav-item {{pendingActive}}">
+          <li class="nav-item active">
             <a class="nav-link {{pendingActive}}" href="dashboard/pending">
-              <i class="ni ni-circle-08 text-pink"></i> Pending Requests
+              <i class="ni ni-fat-add text-primary"></i> Pending Requests
             </a>
           </li>
-          <li class="nav-item {{budgetActive}}">
+          <li class="nav-item active ">
             <a class="nav-link {{budgetActive}}" href="/budget">
-              <i class="ni ni-circle-08 text-pink"></i> Add Budget
+              <i class="ni ni-tag text-primary"></i> Add Budget
             </a>
           </li>
-          <li class="nav-item {{viewBudActive}}">
+          <li class="nav-item active">
             <a class="nav-link {{viewBudActive}}" href="/budget/my-budget">
-              <i class="ni ni-circle-08 text-pink"></i> View Budget
+              <i class="ni ni-collection text-primary"></i> View Budget
             </a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item active">
             <a class="nav-link" href="/logout">
-              <i class="ni ni-circle-08 text-pink"></i> Logout
+              <i class="ni ni-button-power text-primary"></i> Logout
             </a>
           </li>
           <li class="nav-item">
             <form action="/dashboard/{{userInfo._id}}?_method=DELETE" method="POST">
                 <input type="hidden" name="_method" value="DELETE">
-                <button type="submit" type="button" class="btn btn-warning" >Delete my account</button>
+                <button type="submit" type="button" class="btn btn-primary btn-sm ml-4 mt-2 mb-2" >Delete my account</button>
             </form>
           </li>
         </ul>
         <ul class="navbar-nav ">
-          <li class="nav-item {{signupActive}}" id="signup">
-            <a class="nav-link {{signupActive}}" href="/signup">
-              <i class="ni ni-circle-08 text-pink"></i> Signup
+          <li class="nav-item active" id="group">
+            <a class="nav-link {{signupActive}}" href="/group">
+              <i class="ni ni-satisfied text-primary"></i> Group-14
             </a>
           </li>
-          <li class="nav-item {{loginActive}}" id="login">
+          <li class="nav-item active" id="signup">
+            <a class="nav-link {{signupActive}}" href="/signup">
+              <i class="ni ni-badge text-primary"></i> Signup
+            </a>
+          </li>
+          <li class="nav-item active" id="login">
             <a class="nav-link {{loginActive}}" href="/login">
-              <i class="ni ni-circle-08 text-pink"></i> Login
+              <i class="ni ni-circle-08 text-rprimaryed"></i> Login
             </a>
           </li>
         </ul>
@@ -125,7 +130,7 @@
         <nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
         <div class="container-fluid">
             <!-- Brand -->
-            <a class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block" href="./index.html">Dashboard</a>
+            <h1><a class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block" href="./index.html">Dashboard</a></h1>
             <!-- User -->
             <ul class="navbar-nav align-items-center d-none d-md-flex">
             <li class="nav-item dropdown">
@@ -152,6 +157,8 @@
         </div>
     </div>
     <!--   Core   -->
+    <script src="/public/js/addTransaction.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="./assets/js/plugins/jquery/dist/jquery.min.js"></script>
     <script src="./assets/js/plugins/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>

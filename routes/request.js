@@ -18,13 +18,14 @@ router.post('/', async (req, res) => {
   let date_time = new Date();
 
   // check if granter is a registered user
-  let granterInfo = await requireUsers.getUserByEmail(granterEmail);
+  let granterInfo;
   try {
+    granterInfo = await requireUsers.getUserByEmail(granterEmail);
     if (!granterInfo) {
     throw "You cannot request money from unregistered user!"
     }
   } catch (e) {
-    res.render("user/error", {errorMessage: e, title:"Granter Not Registered" , class: "error"});
+    return res.render("user/error", {error: e, title:"Granter Not Registered" , class: "error"});
   }
 
   let requestDetails =  {
@@ -36,21 +37,28 @@ router.post('/', async (req, res) => {
         requestFlag: false
   }
 
-  let requestMoney = await requireRequest.createRequest(requestDetails);
+  let requestMoney;
+  try {
+    requestMoney = await requireRequest.createRequest(requestDetails);
+  } catch (e) {
+    return res.render("user/error", {error: e, title:"Request Not Created" , class: "error"});
+  }
+
   res.render("user/success", {message: "Money requested!"})
 });
 
 router.get('/accept/:id', async (req, res) => {
   let requestId = req.params.id;
   
-  let acceptRequest = await requireRequest.acceptRequest(requestId);
+  let acceptRequest;
   // check if accepted requested is found
   try {
+    acceptRequest = await requireRequest.acceptRequest(requestId);
     if (!acceptRequest) {
     throw "Accepted Request Not Found!"
     }
   } catch (e) {
-    res.render("user/error", {errorMessage: e, title:"Request Not Found" , class: "error"});
+    return res.render("user/error", {error: e, title:"Request Not Found" , class: "error"});
   }
 
   if(acceptRequest === true)
@@ -62,14 +70,15 @@ router.get('/accept/:id', async (req, res) => {
 router.get('/decline/:id', async (req, res) => {
   let requestId = req.params.id;
   
-  let declineRequest = await requireRequest.declineRequest(requestId);
+  let declineRequest;
   // check if declined requested is found
   try {
+    declineRequest = await requireRequest.declineRequest(requestId);
     if (!declineRequest) {
     throw "Declined Request Not Found!"
     }
   } catch (e) {
-    res.render("user/error", {errorMessage: e, title:"Request Not Found" , class: "error"});
+    return res.render("user/error", {error: e, title:"Request Not Found" , class: "error"});
   }
 
   if(declineRequest === true)

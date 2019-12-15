@@ -6,14 +6,15 @@ const saltRounds = 16;
 
 async function addUser(userDetails) {
     const usersCollection = await users();
-    const hashedPassword = await bcrypt.hash(userDetails.password, saltRounds)
+    const hashedPassword = await bcrypt.hash(userDetails.password, saltRounds);
+
     let userDetailsObj = {
         fName: userDetails.fName,
         lName: userDetails.lName,
         email: userDetails.email,
         password: hashedPassword,
         income: undefined,
-        currentAmount: "1000",
+        currentAmount: "0",
         transactionIds: {
             sent: [],
             received: [],
@@ -44,8 +45,10 @@ async function addUser(userDetails) {
     let userObj = {
         flag: false
     };
+
+    // check if adding user is successful
     if (insertInfo.insertedCount === 0)
-        return userObj;
+        throw "Adding user failed!";
     
     let newUserId = insertInfo.insertedId;
 
@@ -59,6 +62,12 @@ async function addUser(userDetails) {
 
 async function updateUser(email, updatedDetails) {
     const usersCollection = await users();
+
+    // check if all details are type = string
+    if (typeof(updatedDetails.fName) !== 'string' || typeof(updatedDetails.lName) !== 'string' || typeof(updatedDetails.email) !== 'string') {
+        throw "All the details must be of type string!";
+    }
+
     let updatedDetailsObj = {
         fName: updatedDetails.fName,
         lName: updatedDetails.lName,
@@ -66,8 +75,10 @@ async function updateUser(email, updatedDetails) {
     };
 
     let updateInfo = await usersCollection.updateOne({email: email}, {$set: updatedDetailsObj});
+
+    // check if updating user is successful
     if (updateInfo.modifiedCount === 0) 
-        return false;
+        throw "Updating user failed!";
     let updatedUser = await usersCollection.findOne({email: email});
 
     return updatedUser;
@@ -78,8 +89,9 @@ async function deleteUser(email) {
 
     const deleteInfo = await usersCollection.removeOne({email: email});
 
+    // check if deleting user is successful
     if (deleteInfo.deletedCount === 0) {
-        return false;
+        throw "Deleting user failed!";
     }
     if (deleteInfo.deletedCount === 1) {
         return true;
@@ -89,6 +101,8 @@ async function deleteUser(email) {
 async function getUser (userId) {
     let usersCollection = await users();
     let getUser = await usersCollection.findOne({_id: ObjectId(userId)});
+
+    // check if user found
     if(!getUser)
         return false;
     else
@@ -98,6 +112,8 @@ async function getUser (userId) {
 async function getUserByEmail (email) {
     let usersCollection = await users();
     let getUserByEmail = await usersCollection.findOne({email: email});
+
+    // check if user found
     if(!getUserByEmail)
         return false;
     else
@@ -107,8 +123,10 @@ async function getUserByEmail (email) {
 async function updateTransactionIds (user) {
     let usersCollection = await users();
     let updateInfo = await usersCollection.updateOne({_id: ObjectId(user._id)}, {$set: user});
+
+    // check if updating transaction IDs is successful
     if (updateInfo.modifiedCount === 0) 
-        return false;
+        throw "Updating transaction IDs failed!";
     else
         return true;
 }
@@ -116,6 +134,8 @@ async function updateTransactionIds (user) {
 async function updateAmount (userInfo) {
     let usersCollection = await users();
     let updateInfo = await usersCollection.updateOne({_id: ObjectId(userInfo._id)}, {$set: userInfo});
+
+    // check if updating amount is successful
     if (updateInfo.modifiedCount === 0) 
         return false;
     else
@@ -127,8 +147,10 @@ async function updateUserCategory (user, category, updatedAmount) {
     let updateCurrentBudget = user;
     updateCurrentBudget.currentBudget.categories[category] = updatedAmount;
     let updateInfo = await usersCollection.updateOne({_id: ObjectId(user._id)}, {$set: updateCurrentBudget});
+
+    // check if updating budget category is successful
     if (updateInfo.modifiedCount === 0) 
-        return false;
+        throw "Updating budget category failed!";
     else
         return true;
 }
@@ -138,8 +160,10 @@ async function resetBudgetCategories (user, reset) {
     let updateCategory = user;
     updateCategory.currentBudget.categories = reset;
     let updateInfo = await usersCollection.updateOne({_id: ObjectId(user._id)}, {$set: updateCategory});
+
+    // check if updating budget is successful
     if (updateInfo.modifiedCount === 0) 
-        return false;
+        return false
     else
         return true;
 }
@@ -149,8 +173,10 @@ async function updateBudgetMonthYear (user, monthYear) {
     let updateMonthYear = user;
     updateMonthYear.currentBudget.monthYear = monthYear;
     let updateInfo = await usersCollection.updateOne({_id: ObjectId(user._id)}, {$set: updateMonthYear});
+
+    // check if updating budget monthyear is successful
     if (updateInfo.modifiedCount === 0)
-        return false;
+        throw "Updating budget month and year failed!";
     else
         return true;
 }
@@ -160,8 +186,10 @@ async function updateUserSplitCreditInfo (user, splitId) {
     let updateSplitCreditId = user;
     updateSplitCreditId.transactionIds.splitCredit.push(splitId);
     let updateInfo = await usersCollection.updateOne({_id: ObjectId(user._id)}, {$set: updateSplitCreditId});
+
+    // check if updating split debit info is successful
     if (updateInfo.modifiedCount === 0)
-        return false;
+        throw "Updating split debit information failed!";
     else
         return true;
 }
@@ -169,10 +197,17 @@ async function updateUserSplitCreditInfo (user, splitId) {
 async function updateUserSplitDebitInfo (userId, splitId) {
     let usersCollection = await users();
     let updateSplitDebitId = await getUser(userId);
+
+    // check if user found
+    if(!updateSplitDebitId)
+        throw "This is not a registered user!";
+
     updateSplitDebitId.transactionIds.splitDebit.push(splitId);
     let updateInfo = await usersCollection.updateOne({_id: ObjectId(userId)}, {$set: updateSplitDebitId});
+
+    // check if updating split credit info is successful
     if (updateInfo.modifiedCount === 0)
-        return false;
+        throw "Updating split credit information failed!";
     else
         return true;
 }

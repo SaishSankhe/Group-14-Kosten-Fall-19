@@ -15,13 +15,25 @@ router.get('/', async (req, res) => {
 
     let userId = req.session.userId;
 
-    let creditDebit = await requireStatement.checkCreditDebit(userId, fullDate);
-    let sender = await requireStatement.checkSentSender(userId, fullDate);
-    let receiver = await requireStatement.checkSentReceiver(userId, fullDate);
-    let requester = await requireStatement.checkRequestRequester(userId, fullDate);
-    let granter = await requireStatement.checkRequestGranter(userId, fullDate);
-    let splitDebit = await requireStatement.checkSplitDebit(userId, fullDate);
-    let splitCredit = await requireStatement.checkSplitCredit(userId, fullDate);
+    let creditDebit;
+    let sender;
+    let receiver;
+    let requester;
+    let granter;
+    let splitDebit;
+    let splitCredit;
+
+    try {
+        creditDebit = await requireStatement.checkCreditDebit(userId, fullDate);
+        sender = await requireStatement.checkSentSender(userId, fullDate);
+        receiver = await requireStatement.checkSentReceiver(userId, fullDate);
+        requester = await requireStatement.checkRequestRequester(userId, fullDate);
+        granter = await requireStatement.checkRequestGranter(userId, fullDate);
+        splitDebit = await requireStatement.checkSplitDebit(userId, fullDate);
+        splitCredit = await requireStatement.checkSplitCredit(userId, fullDate);
+    } catch (e) {
+        return res.render("user/statement", {error: e, title:"Statement Error" , class: "error", viewActive: "active"});
+    }
 
     res.render("user/statement", { title: "Statement", creditDebit: creditDebit, sender: sender, receiver: receiver, requester: requester, granter: granter, splitDebit: splitDebit, splitCredit: splitCredit, viewActive: "active" });
 });

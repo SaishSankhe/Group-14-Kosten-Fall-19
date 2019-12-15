@@ -1,34 +1,37 @@
 {{#if recentTransactions}}
-    <h2 class="display-2 text-white font-weight-bold">Recent Transactions</h2>
+    <h1 class="display-2 text-white font-weight-bold">Recent Transactions</h1>
     {{#if error}}
         <p class="{{class}} text-white">{{error}}</p>
     {{/if}}
     <ol class="font-weight-bold">
         {{#each recentTransactions}}
-        <li class="text-white heading-small text-sm">
-            Transaction Name: {{transactionName}} <br/>
-            Amount: {{amount}} <br/>
-            Type: {{type}} <br/>
-            Category: {{category}} <br/>
-            {{#if split.bool}}
-                Split: Yes
-            {{else}}
-                Split: No
-                <br/>
-                <div class="row">
-                <button type="submit" type="button" class="btn btn-secondary btn-sm mt-2 mb-2">
-                    <a href="/transaction/{{_id}}">Edit Transaction</a>
-                </button>
-                
-                <form action="/transaction/{{_id}}?_method=DELETE" method="POST">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <input type="hidden" name="transactionId" value="{{_id}}">
-                    <button type="submit" type="button" class="btn btn-warning btn-sm mt-2 mb-2">Delete Transaction</button>
-                </form>
-                </div>
-            {{/if}}
-            
-        </li>
+        <div class="card card-stats col-md-6 mb-4 mb-lg-0 mt-3 mb-3">
+            <div class="card-body">
+                <li class="text-muted heading-small text-sm">
+                    Transaction Name: {{transactionName}} <br/>
+                    Amount: {{amount}} <br/>
+                    Type: {{type}} <br/>
+                    Category: {{category}} <br/>
+                    {{#if split.bool}}
+                        Split: Yes
+                    {{else}}
+                        Split: No
+                        <br/>
+                        <div class="row">
+                        <button type="submit" type="button" class="btn btn-secondary btn-sm mt-2 mb-2">
+                            <a href="/transaction/{{_id}}">Edit Transaction</a>
+                        </button>
+                        
+                        <form action="/transaction/{{_id}}?_method=DELETE" method="POST">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="transactionId" value="{{_id}}">
+                            <button type="submit" type="button" class="btn btn-warning btn-sm mt-2 mb-2">Delete Transaction</button>
+                        </form>
+                        </div>
+                    {{/if}}
+                 </li>
+            </div>
+        </div>
         {{/each}}
     </ol>
 {{/if}}

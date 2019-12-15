@@ -37,8 +37,10 @@ async function createRequest (requestDetails) {
     }
 
     let insertRequestInfo = await requestCollection.insertOne(requestDetailsObj);
+
+    // check if inserting request is successful
     if (insertRequestInfo.insertedCount === 0) 
-        return false;
+        throw "Adding request transaction failed!";
     
     const newRequestId = insertRequestInfo.insertedId;
     requesterInfo.transactionIds.requested.push(newRequestId);
@@ -63,11 +65,12 @@ async function acceptRequest (requestId) {
     let granterInfo = await requireUsers.getUser(requestInfo.granterId);
 
     // check if granter found
-    if (!requestgranterInfoerInfo) {
+    if (!granterInfo) {
         throw "Granter not found!"
     }
 
-    let isEnoughBalance = checkGranterBalance(granterInfo.currentAmount, requestAmount)
+    let granterAmount = parseFloat(granterInfo.currentAmount);
+    let isEnoughBalance = checkGranterBalance(granterAmount, requestAmount)
     
     if (isEnoughBalance === true) {
         let granterCurrentAmount = parseFloat(granterInfo.currentAmount) - parseFloat(requestAmount);
@@ -84,8 +87,9 @@ async function acceptRequest (requestId) {
 
         let updateRequestIdInfo = await requestCollection.updateOne({_id: ObjectId(requestId)}, {$set: requestInfo});
             
+        // check if accepting request is successful
         if (updateRequestIdInfo.modifiedCount === 0)
-            return false;
+            throw "Accepting request failed!";
         else
             return true;
     }
@@ -113,8 +117,9 @@ async function declineRequest (requestId) {
 
     let deleteInfo = await requestCollection.removeOne({_id: ObjectId(requestId)});
     
+    // check if declining request is successful
     if (deleteInfo.deletedCount === 0) {
-        return false;
+        throw "Declining request failed!";
     }
     if (deleteInfo.deletedCount === 1) {
         return true;
@@ -141,6 +146,7 @@ async function getRequestInfo (requestId) {
 
     let getRequestDetails = await requestCollection.findOne({_id: ObjectId(requestId)});
 
+    // check if request details found
     if(!getRequestDetails)
         return false;
     else

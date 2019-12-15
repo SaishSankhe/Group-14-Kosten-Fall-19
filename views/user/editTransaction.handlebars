@@ -1,31 +1,48 @@
-<h2> Edit Transaction </h2>
+<h1 class="display-2 text-white font-weight-bold"> Edit Transaction </h1>
 {{#if error}}
-    <p class="{{class}}">{{error}}</p>
+    <p class="{{class}} text-white">{{error}}</p>
 {{/if}}
 <form action="/transaction/{{transaction._id}}?_method=PUT" method="POST" id="edit-transaction">
-    <label for="transactionName">Transaction name:</label>
-    <input type="text" name="transactionName" id="transactionName" value="{{transaction.transactionName}}" required>
-    <br/>
-    <label for="amount">Amount:</label>
-    <input type="text" name="amount" id="amount" value="{{transaction.amount}}" required>
-    <br/>
-    <label for="category">Category:</label>
-    <select id="category" name="category">
-        <option value="{{transaction.category}}" selected>Last selected: {{transaction.category}}</option>
-        <option value="grocery">Grocery</option>
-        <option value="entertainment">Entertainment</option>
-        <option value="eatingOut">Eating out</option>
-        <option value="bills">Bills</option>
-        <option value="savings">Savings</option>
-        <option value="misc">Miscellaneous</option>
-        <option value="transportation">Transportation</option>
-        <option value="departmentalStore">Departmental store</option>
-    </select>
-    <br/>
-    <input type="hidden" name="transactionId" value="{{transaction._id}}">
-    <input type="hidden" name="type" value="{{transaction.type}}">
-    <input type="hidden" name="_method" value="PUT">
-    <button type="submit" id="submit">Update</button>
+    <div class="row text-white">
+        <div class="col-md-12">
+            <div class="form-group col-md-6" >
+                <label for="transactionName">Transaction name:</label>
+                <input type="text" class="form-control" name="transactionName" id="transactionName" value="{{transaction.transactionName}}" required>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group col-md-6" >
+                <label for="amount">Amount:</label>
+                <input type="text" class="form-control" name="amount" id="amount" value="{{transaction.amount}}" required>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group col-md-6" >
+                <label for="category">Category:</label>
+                <select id="category" class="form-control" name="category">
+                    <option value="{{transaction.category}}" selected>Last selected: {{transaction.category}}</option>
+                    <option value="grocery">Grocery</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="eatingOut">Eating out</option>
+                    <option value="bills">Bills</option>
+                    <option value="savings">Savings</option>
+                    <option value="misc">Miscellaneous</option>
+                    <option value="transportation">Transportation</option>
+                    <option value="departmentalStore">Departmental store</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group col-md-6" >
+                <input type="hidden" name="transactionId" value="{{transaction._id}}">
+                <input type="hidden" name="type" value="{{transaction.type}}">
+                <input type="hidden" name="_method" value="PUT">
+                <button type="submit" type="button" class="btn btn-default" id="submit">Update</button>
+            </div>
+        </div>
 </form>
 <br/>
 <a href="/dashboard">Dashboard</a>

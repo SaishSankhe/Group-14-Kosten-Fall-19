@@ -16,8 +16,11 @@ async function addBudget (userId, budgetDetails) {
 
     let userInfo = await requireUsers.getUser(userId);
     userInfo.budgetId = budgetId;
-    await requireUsers.updateAmount(userInfo);
 
+    let newUserIncome = budgetDetails.income;
+    userInfo.income = newUserIncome;
+
+    await requireUsers.updateAmount(userInfo);
     return budgetId;
 }
 
@@ -87,7 +90,7 @@ async function getBudget (budgetId) {
 
     // check if budget found
     if (!budgetInfo) {
-        throw "Budget not found!";
+        return false;
     }
     else
         return budgetInfo;

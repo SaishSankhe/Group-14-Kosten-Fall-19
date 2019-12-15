@@ -1,8 +1,8 @@
 {{#if splitPending}}
     {{#if error}}
-        <p class="{{class}}">{{error}}</p>
+        <p class="{{class}} text-white">{{error}}</p>
     {{/if}}
-    <h2 class="text-white font-weight-bold">Split Requests</h2>
+    <h1 class="text-white font-weight-bold">Split Requests</h1>
     <ol>
         {{#each splitPending}}
         <li class="text-white heading-small text-sm">
@@ -19,7 +19,7 @@
     {{#if error}}
         <p class="{{class}}">{{error}}</p>
     {{/if}}
-    <h2 class="text-white font-weight-bold">Requested Money</h2>
+    <h1 class="text-white font-weight-bold">Requested Money</h1>
     <ol>
         {{#each requestPending}}
         <li class="text-white heading-small text-sm">

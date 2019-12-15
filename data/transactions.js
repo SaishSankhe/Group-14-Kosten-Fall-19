@@ -7,20 +7,27 @@ const ObjectId = require('mongodb').ObjectID;
 async function addTransaction (userId, transactionDet) {
     const transactionCollection = await transaction();
 
-    let amount = transactionDet.amount;
+    let amountStr = transactionDet.amount.trim();
+    let amount = parseFloat(amountStr);
     let type = transactionDet.type;
     const getUser = await requireUsers.getUser(userId);
-    let userBalance = getUser.currentAmount;
-    let isEnoughBalance = checkUserBalanceWhenDebit(userBalance, amount, type);
 
-    // if (isEnoughBalance === true) {
+    // check if user found
+    if(!getUser)
+        throw "User not found!";
+
+    let userBalance = getUser.currentAmount.trim();
+    let isEnoughBalance = checkUserBalanceWhenDebit(userBalance, amount, type);
+    let addedTransaction;
+
+    if (isEnoughBalance === true) {
         let transactionDetailsObj = {
             userId: ObjectId(userId),
             amount: transactionDet.amount,
-            type: transactionDet.type,
+            type: transactionDet.type.trim(),
             date_time: transactionDet.date_time,
-            category: transactionDet.category,
-            transactionName: transactionDet.transactionName,
+            category: transactionDet.category.trim(),
+            transactionName: transactionDet.transactionName.trim(),
             split: {
                 splitId: undefined,
                 bool: transactionDet.split.bool
@@ -28,20 +35,23 @@ async function addTransaction (userId, transactionDet) {
         };
 
         let insertTransactionInfo = await transactionCollection.insertOne(transactionDetailsObj);
+
+        // check if inserting transaction is successful
         if (insertTransactionInfo.insertedCount === 0) 
-            return false;
+            throw "Adding transaction failed!";
 
         const newTransactionId = insertTransactionInfo.insertedId;
-        let addedTransaction = await transactionCollection.findOne({_id: newTransactionId});
+        addedTransaction = await transactionCollection.findOne({_id: newTransactionId});
 
         let date_time = transactionDet.date_time;
-        let category = transactionDet.category;
+        let category = transactionDet.category.trim();
 
         if(type === "debit") {
             if (transactionDet.split.bool === true) {
                 const splitCollection = await split();
                 let noOfUsers = transactionDet.requestFlag.length + 1;
-                let splitAmount = parseFloat(amount)/noOfUsers;
+                let splitAmountFlt = parseFloat(amount)/noOfUsers;
+                let splitAmount = splitAmountFlt.toString();
                 let splitDetailsObj = {
                     transactionId: newTransactionId,
                     superUserId: ObjectId(userId),
@@ -69,15 +79,25 @@ async function addTransaction (userId, transactionDet) {
                 }
 
                 let insertSplitInfo = await splitCollection.insertOne(splitDetailsObj);
+
+                // check if split info is inserted successfully
                 if (insertSplitInfo.insertedCount === 0) 
-                    return false;
+                    throw "Adding split information failed!";
 
                 let newSplitId = insertSplitInfo.insertedId;
                 let getTransactionForSplit = await getTransaction(newTransactionId);
+
+                // check is transaction is found
+                if(!getTransactionForSplit) {
+                    throw "Transaction not found!"
+                }
+
                 getTransactionForSplit.split.splitId = newSplitId;
                 let updateSplitIdInfo = await transactionCollection.updateOne({_id: ObjectId(newTransactionId)}, {$set: getTransactionForSplit});
+                
+                // check if split info is updated successfully
                 if (updateSplitIdInfo.modifiedCount === 0)
-                    return false;
+                    throw "Updating split information failed!";
 
                 await requireUsers.updateUserSplitCreditInfo(getUser, newSplitId);
                 
@@ -96,22 +116,23 @@ async function addTransaction (userId, transactionDet) {
             await resetAndSetStatement(toBeComparedDebit, getUser, newTransactionId);
             await resetAndSetCategories(toBeComparedDebit, getUser, amount, type, category);
         }
-    // }
-    // else {
-    //     throw "You do not have enough money to add this transaction!";
-    // }
 
-    if(type === "credit") {
+        if(type === "credit") {
         
-        let intUpdatedAmount = parseFloat(getUser.currentAmount) + parseFloat(amount);
-        let updatedAmount = intUpdatedAmount.toString();
-        getUser.currentAmount = updatedAmount;
-        await requireUsers.updateAmount(getUser);
-        getUser.transactionIds.credit.push(newTransactionId);
-        let toBeComparedCredit = date_time.toString();
-
-        await resetAndSetStatement(toBeComparedCredit, getUser, newTransactionId);
-        await resetAndSetCategories(toBeComparedCredit, getUser, amount, type, category)
+            let intUpdatedAmount = parseFloat(getUser.currentAmount) + parseFloat(amount);
+            let updatedAmount = intUpdatedAmount.toString();
+            getUser.currentAmount = updatedAmount;
+            await requireUsers.updateAmount(getUser);
+            getUser.transactionIds.credit.push(newTransactionId);
+            let toBeComparedCredit = date_time.toString();
+    
+            await resetAndSetStatement(toBeComparedCredit, getUser, newTransactionId);
+            await resetAndSetCategories(toBeComparedCredit, getUser, amount, type, category)
+        }
+        
+    }
+    else {
+        throw "You do not have enough money to add this transaction!";
     }
 
     return addedTransaction;
@@ -134,6 +155,7 @@ async function getTransaction (transactionId) {
 
     let getTransactionDetails = await transactionCollection.findOne({_id: ObjectId(transactionId)});
 
+    // check if transaction found
     if(!getTransactionDetails)
         return false;
     else
@@ -256,7 +278,7 @@ async function deleteTransaction (transactionId) {
 
     let isDateEqualBudget = checkDateCurrentBudget(date_time, userInfo);
 
-    let typeOfTransaction = getTransactionDetails.type;
+    let typeOfTransaction = getTransactionDetails.type.trim();
     let amount = getTransactionDetails.amount;
     let currentAmount = userInfo.currentAmount;
     let category = getTransactionDetails.category;
@@ -295,8 +317,9 @@ async function deleteTransaction (transactionId) {
 
         let deleteInfo = await transactionCollection.removeOne({_id: ObjectId(transactionId)});
 
+        // check if deleting transaction is successful
         if (deleteInfo.deletedCount === 0) {
-            return false;
+            throw "Deleting transaction failed!";
         }
         if (deleteInfo.deletedCount === 1) {
             return true;
@@ -334,8 +357,9 @@ async function deleteTransaction (transactionId) {
         }
         let deleteInfo = await transactionCollection.removeOne({_id: ObjectId(transactionId)});
         
+        // check if deleting transaction is successful
         if (deleteInfo.deletedCount === 0) {
-            return false;
+            throw "Deleting transaction failed!";
         }
         if (deleteInfo.deletedCount === 1) {
             return true;
@@ -352,10 +376,10 @@ async function updateTransaction (transactionId, newTransactionDet) {
 
     let isDateEqualBudget = checkDateCurrentBudget(date_time, userInfo);
 
-    let typeOfTransaction = getTransactionDetails.type;
-    let amount = getTransactionDetails.amount;
-    let currentAmount = userInfo.currentAmount;
-    let category = getTransactionDetails.category;
+    let typeOfTransaction = getTransactionDetails.type.trim();
+    let amount = getTransactionDetails.amount.trim();
+    let currentAmount = userInfo.currentAmount.trim();
+    let category = getTransactionDetails.category.trim();
 
     if (typeOfTransaction === "debit") {
     
@@ -407,15 +431,16 @@ async function updateTransaction (transactionId, newTransactionDet) {
         }
     }
 
-    let newAmount = newTransactionDet.amount;
-    let type = newTransactionDet.type;
-    let userBalance = userInfo.currentAmount;
+    let newAmountStr = newTransactionDet.amount.trim()
+    let newAmount = parseFloat(newAmountStr);
+    let type = newTransactionDet.type.trim();
+    let userBalance = userInfo.currentAmount.trim();
 
     let isEnoughBalance = checkUserBalanceWhenDebit(userBalance, newAmount, type);
 
-    // if (isEnoughBalance === true) {
+    if (isEnoughBalance === true) {
         let updatedDateTime = newTransactionDet.date_time;
-        let updatedCategory = newTransactionDet.category;
+        let updatedCategory = newTransactionDet.category.trim();
         
         let updatedtransactionDetailsObj = {
             userId: userInfo._id,
@@ -427,8 +452,10 @@ async function updateTransaction (transactionId, newTransactionDet) {
         };
     
         let updateTransactionInfo = await transactionCollection.updateOne({_id: ObjectId(transactionId)}, {$set: updatedtransactionDetailsObj});
+        
+        // check if updating transction is sucesful
         if (updateTransactionInfo.modifiedCount === 0) 
-            return false;
+            throw "Updating transaction failed!";
 
         if(type === "debit") {
             let intUpdatedAmount = parseFloat(userInfo.currentAmount) - parseFloat(newAmount);
@@ -440,20 +467,20 @@ async function updateTransaction (transactionId, newTransactionDet) {
             
             await updateBudgetCategories(toBeComparedDebit, userInfo, newAmount, type, updatedCategory);
         }
-    // }
-    // else {
-    //     return false;
-    // }
 
-    if(type === "credit") {
-        let intUpdatedAmount = parseFloat(userInfo.currentAmount) + parseFloat(newAmount);
-        let updatedAmount = intUpdatedAmount.toString();
-        userInfo.currentAmount = updatedAmount;
-        await requireUsers.updateAmount(userInfo);
-        userInfo.transactionIds.credit.push(transactionId);
-        let toBeComparedCredit = updatedDateTime.toString();
-
-        await updateBudgetCategories(toBeComparedCredit, userInfo, newAmount, type, updatedCategory)
+        if(type === "credit") {
+            let intUpdatedAmount = parseFloat(userInfo.currentAmount) + parseFloat(newAmount);
+            let updatedAmount = intUpdatedAmount.toString();
+            userInfo.currentAmount = updatedAmount;
+            await requireUsers.updateAmount(userInfo);
+            userInfo.transactionIds.credit.push(transactionId);
+            let toBeComparedCredit = updatedDateTime.toString();
+    
+            await updateBudgetCategories(toBeComparedCredit, userInfo, newAmount, type, updatedCategory)
+        }
+    }
+    else {
+        throw "You do not have enough money to update this transaction!";
     }
 
     let getNewTransactionDetails = await getTransaction(transactionId);
@@ -487,7 +514,6 @@ module.exports = {
     checkDateCurrentBudget,
     deleteTransaction,
     updateTransaction,
-    updateBudgetCategories,
-    recentTransactions
-}
-
+    recentTransactions,
+    updateBudgetCategories
+};

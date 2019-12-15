@@ -8,6 +8,7 @@ async function updateSplitCalculation (splitId, userId) {
     const splitCollection = await split();
 
     let splitInfo = await getSplitTransaction(splitId);
+
     // check if split info found
     if (!splitInfo) {
         throw "Split info not found!"
@@ -15,6 +16,7 @@ async function updateSplitCalculation (splitId, userId) {
 
     const transactionId = splitInfo.transactionId;
     let transaction = await requireTransactions.getTransaction(transactionId);
+
     // check if transaction found
     if (!transaction) {
         throw "Transaction not found!"
@@ -27,19 +29,22 @@ async function updateSplitCalculation (splitId, userId) {
     const superUserId = splitInfo.superUserId;
 
     let superUserInfo = await requireUsers.getUser(superUserId);
+
     // check if superuser found
     if (!superUserInfo) {
         throw "Super user not found!"
     }
 
     let userInfo = await requireUsers.getUser(userId);
+
     // check if split user found
     if (!userInfo) {
         throw "Other users not found!"
     }
     
     let superUserCurrentAmount = superUserInfo.currentAmount.trim();
-    let userCurrentAmount = userInfo.currentAmount.trim();
+    let userCurrentAmountStr = userInfo.currentAmount.trim();
+    let userCurrentAmount = parseFloat(userCurrentAmountStr);
     
     let ifEnoughBalance = checkUserBalance (userCurrentAmount, splitAmount);
 
@@ -62,6 +67,7 @@ async function updateSplitCalculation (splitId, userId) {
 
         let updateSplitIdInfo = await splitCollection.updateOne({_id: ObjectId(splitId)}, {$set: splitInfo});
         
+        // check if updating split id is successful
         if (updateSplitIdInfo.modifiedCount === 0)
             throw "Updating split id failed!";
 
@@ -94,7 +100,8 @@ async function cancelSplit (splitId, userId) {
 
     let splitTransactionDetails = await getSplitTransaction(splitId);
     let userInfo = await requireUsers.getUser(userId);
-    // check if transaction found
+
+    // check if user found
     if (!userInfo) {
         throw "User not found!"
     }
@@ -111,8 +118,10 @@ async function cancelSplit (splitId, userId) {
         }
     }
     let updateSplit = await splitCollection.updateOne({_id: ObjectId(splitId)}, {$set: splitTransactionDetails});
+    
+    // check if cancelling split is successful
     if (updateSplit.modifiedCount === 0) 
-        return false;
+        throw "Cancelling split failed!";
     else
         return true;
 }
@@ -127,6 +136,8 @@ function checkUserBalance (currentAmount, splitAmount) {
 async function getSplitTransaction (splitId) {
     let splitCollection = await split();
     let getSplitDetails = await splitCollection.findOne({_id: ObjectId(splitId)});
+
+    // check if split found
     if(!getSplitDetails)
         return false;
     else

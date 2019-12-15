@@ -6,15 +6,16 @@ const requireTransactions = data.transactions;
 
 router.get('/', async (req, res) => {
     let userId = req.session.userId;
-    let recentTransactions = await requireTransactions.recentTransactions(userId);
+    let recentTransactions;
 
     // check if recent transactions not found
     try {
+        recentTransactions = await requireTransactions.recentTransactions(userId);
         if (!recentTransactions) {
         throw "Recent transactions not found!";
         }
     } catch (e) {
-        res.render("user/recentTransactions", {errorMessage: e, title:"Recent Transactions Not Found" , class: "error", recentActive: "active"});
+        return res.render("user/recentTransactions", {error: e, title:"Recent Transactions Not Found" , class: "error", recentActive: "active"});
     }
 
     res.render("user/recentTransactions", {recentTransactions: recentTransactions, recentActive: "active"});

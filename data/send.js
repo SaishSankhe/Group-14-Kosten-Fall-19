@@ -25,7 +25,8 @@ async function sendMoney (sendDetails) {
     }
 
     let receiverId = receiverInfo._id;
-    let senderCurrentAmount = senderInfo.currentAmount.trim();
+    let senderCurrentAmountStr = senderInfo.currentAmount.trim();
+    let senderCurrentAmount = parseFloat(senderCurrentAmountStr);
 
     let isEnoughBalance = checkUserBalance(senderCurrentAmount, amount);
 
@@ -39,8 +40,10 @@ async function sendMoney (sendDetails) {
         }
 
         let insertSentInfo = await sentCollection.insertOne(sendDetailsObj);
+
+        // check if inserting send is successful
         if (insertSentInfo.insertedCount === 0) 
-            return false;
+            throw "Adding send transaction failed!";
         
         const newSentId = insertSentInfo.insertedId;
 

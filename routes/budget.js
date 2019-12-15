@@ -10,27 +10,35 @@ router.get("/", async (req, res) => {
 
 router.get("/my-budget", async (req, res) => {
     let userId = req.session.userId;
-    let userInfo = await requireUsers.getUser(userId);
+    
+    let userInfo;
 
     // check if user found
     try {
+        userInfo = await requireUsers.getUser(userId);
         if (!userInfo) {
             throw "User not found!"
         }
     } catch (e) {
-        res.render("user/error", {errorMessage: e, title:"User Not Found" , class: "error"});
+        return res.render("user/setBudget", {error: e, title:"User Not Found" , class: "error"});
     }
     
     let budgetId = userInfo.budgetId;
-    let budgetInfo = await requireBudget.getBudget(budgetId);
+    let budgetInfo;
+
+    try {
+        budgetInfo = await requireBudget.getBudget(budgetId);
+    } catch (e) {
+        return res.render("user/displayBudget", {error: e, class: "error", title: "My Budget", viewBudActive: "active"});
+    }
 
     // check if budget found
     try {
-        if (!userInfo) {
+        if (!budgetInfo) {
             throw "Budget not found!"
         }
     } catch (e) {
-        res.render("user/error", {errorMessage: e, title:"Budget Not Found" , class: "error"});
+        return res.render("user/error", {error: e, title:"Budget Not Found" , class: "error"});
     }
 
     res.render("user/displayBudget", {budgetInfo: budgetInfo, viewBudActive: "active"});
@@ -47,7 +55,7 @@ router.post("/", async (req, res) => {
             throw "Income cannot be less than 0!"
         }
     } catch (e) {
-        res.render("user/error", {errorMessage: e, title:"Invalid Income" , class: "error"});
+        return res.render("user/setBudget", {error: e, title:"Invalid Income" , class: "error"});
     }
 
     let grocery = details.grocery.trim();
@@ -65,7 +73,7 @@ router.post("/", async (req, res) => {
             throw "Percent cannot be negative!";
         }
     } catch (e) {
-        res.render("user/error", {errorMessage: e, title:"Invalid values" , class: "error"});
+        return res.render("user/setBudget", {error: e, title:"Invalid values" , class: "error"});
     }
 
     // check if values add to 1
@@ -75,7 +83,7 @@ router.post("/", async (req, res) => {
             throw "Percent total should be 100!";
         }
     } catch (e) {
-        res.render("user/error", {errorMessage: e, title:"Incorrect values" , class: "error"});
+        return res.render("user/setBudget", {error: e, title:"Incorrect values" , class: "error"});
     }
 
     let userId = req.session.userId;
@@ -94,9 +102,13 @@ router.post("/", async (req, res) => {
         }
     }
 
-    let addBudget = await requireBudget.addBudget(userId, budgetObj);
+    try {
+        let addBudget = await requireBudget.addBudget(userId, budgetObj);
+    } catch(e) {
+        return res.render("user/setBudget", {error: e, title:"Budget Error" , class: "error"});
+    }
 
-    res.render("user/success", {message: "Budget added"});
+    res.render("user/success", {message: "Budget added!"});
 });
 
 module.exports = router;
